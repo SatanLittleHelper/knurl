@@ -16,6 +16,12 @@ func NewHandler(svc *Service) *Handler {
 	return &Handler{svc: svc}
 }
 
+func writeError(w http.ResponseWriter, message string, status int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(map[string]string{"error": message}) //nolint:errcheck
+}
+
 type authRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -24,23 +30,23 @@ type authRequest struct {
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var req authRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
+		writeError(w, "bad request", http.StatusBadRequest)
 		return
 	}
 	req.Email = strings.TrimSpace(req.Email)
 	if req.Email == "" || req.Password == "" {
-		http.Error(w, "email and password required", http.StatusBadRequest)
+		writeError(w, "email and password required", http.StatusBadRequest)
 		return
 	}
 
 	token, err := h.svc.Register(r.Context(), req.Email, req.Password)
 	if errors.Is(err, ErrEmailTaken) {
-		http.Error(w, "email already taken", http.StatusConflict)
+		writeError(w, "email already taken", http.StatusConflict)
 		return
 	}
 	if err != nil {
 		log.Printf("register: %v", err)
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		writeError(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 
@@ -53,18 +59,18 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var req authRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
+		writeError(w, "bad request", http.StatusBadRequest)
 		return
 	}
 
 	token, err := h.svc.Login(r.Context(), req.Email, req.Password)
 	if errors.Is(err, ErrInvalidCredentials) {
-		http.Error(w, "invalid credentials", http.StatusUnauthorized)
+		writeError(w, "invalid credentials", http.StatusUnauthorized)
 		return
 	}
 	if err != nil {
 		log.Printf("login: %v", err)
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		writeError(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 

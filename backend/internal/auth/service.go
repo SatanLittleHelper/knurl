@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"log"
-	"strings"
+	"net/mail"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -31,6 +32,9 @@ func NewService(db *gorm.DB, jwtSecret string) *Service {
 func (s *Service) Register(ctx context.Context, email, password string) (string, error) {
 	if len(password) < 6 {
 		return "", errors.New("password must be at least 6 characters")
+	}
+	if _, err := mail.ParseAddress(email); err != nil {
+		return "", errors.New("invalid email")
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -73,5 +77,6 @@ func (s *Service) issueToken(userID uuid.UUID) (string, error) {
 }
 
 func isUniqueViolation(err error) bool {
-	return err != nil && (strings.Contains(err.Error(), "unique") || strings.Contains(err.Error(), "23505"))
+	var pgErr *pgconn.PgError
+	return errors.As(err, &pgErr) && pgErr.Code == "23505"
 }
