@@ -3,6 +3,7 @@ package auth
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -29,7 +30,7 @@ type authRequest struct {
 
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var req authRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := json.NewDecoder(io.LimitReader(r.Body, 1024)).Decode(&req); err != nil {
 		writeError(w, "bad request", http.StatusBadRequest)
 		return
 	}
@@ -58,10 +59,11 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var req authRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := json.NewDecoder(io.LimitReader(r.Body, 1024)).Decode(&req); err != nil {
 		writeError(w, "bad request", http.StatusBadRequest)
 		return
 	}
+	req.Email = strings.TrimSpace(req.Email)
 
 	token, err := h.svc.Login(r.Context(), req.Email, req.Password)
 	if errors.Is(err, ErrInvalidCredentials) {
