@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"errors"
+	"log"
 	"strings"
 	"time"
 
@@ -21,17 +22,24 @@ type Service struct {
 }
 
 func NewService(db *gorm.DB, jwtSecret string) *Service {
+	if len(jwtSecret) < 32 {
+		log.Println("warning: JWT_SECRET is shorter than 32 bytes")
+	}
 	return &Service{db: db, jwtSecret: []byte(jwtSecret)}
 }
 
-func (s *Service) Register(_ context.Context, email, password string) (string, error) {
+func (s *Service) Register(ctx context.Context, email, password string) (string, error) {
+	if len(password) < 6 {
+		return "", errors.New("password must be at least 6 characters")
+	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
 
 	user := User{Email: email, PasswordHash: string(hash)}
-	result := s.db.Create(&user)
+	result := s.db.WithContext(ctx).Create(&user)
 	if result.Error != nil {
 		if isUniqueViolation(result.Error) {
 			return "", ErrEmailTaken
@@ -42,9 +50,9 @@ func (s *Service) Register(_ context.Context, email, password string) (string, e
 	return s.issueToken(user.ID)
 }
 
-func (s *Service) Login(_ context.Context, email, password string) (string, error) {
+func (s *Service) Login(ctx context.Context, email, password string) (string, error) {
 	var user User
-	result := s.db.Where("email = ?", email).First(&user)
+	result := s.db.WithContext(ctx).Where("email = ?", email).First(&user)
 	if result.Error != nil {
 		return "", ErrInvalidCredentials
 	}
