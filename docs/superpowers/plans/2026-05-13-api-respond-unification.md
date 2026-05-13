@@ -157,15 +157,7 @@ git commit -m "feat: add Error and NoContent to api package, add status param to
 
 `plans` уже использует `api.Respond`, но со старой сигнатурой (без статуса). Нужно добавить статус во все вызовы, заменить `http.Error` на `api.Error`, `w.WriteHeader(204)` на `api.NoContent`.
 
-- [ ] **Step 1: Проверить, что проект не собирается (из-за изменения сигнатуры)**
-
-```bash
-cd backend && go build ./...
-```
-
-Ожидаемый результат: ошибки компиляции на `api.Respond(w, plans)` — слишком мало аргументов.
-
-- [ ] **Step 2: Заменить содержимое `internal/plans/handler.go`**
+- [ ] **Step 1: Заменить содержимое `internal/plans/handler.go`**
 
 ```go
 package plans
@@ -281,7 +273,7 @@ func (h *Handler) AddExercise(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-- [ ] **Step 3: Убедиться, что plans компилируется**
+- [ ] **Step 2: Убедиться, что plans компилируется**
 
 ```bash
 cd backend && go build ./internal/plans/...
@@ -289,7 +281,7 @@ cd backend && go build ./internal/plans/...
 
 Ожидаемый результат: успешная компиляция.
 
-- [ ] **Step 4: Закоммитить**
+- [ ] **Step 3: Закоммитить**
 
 ```bash
 git add backend/internal/plans/handler.go
