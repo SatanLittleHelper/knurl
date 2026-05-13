@@ -11,6 +11,7 @@ import (
 	"github.com/satanlittlehelper/knurl/backend/internal/config"
 	"github.com/satanlittlehelper/knurl/backend/internal/db"
 	"github.com/satanlittlehelper/knurl/backend/internal/exercises"
+	"github.com/satanlittlehelper/knurl/backend/internal/plans"
 )
 
 func main() {
@@ -28,6 +29,9 @@ func main() {
 	exerciseSvc := exercises.NewService(database, exercises.StubProvider{})
 	exerciseHandler := exercises.NewHandler(exerciseSvc)
 
+	planSvc := plans.NewService(database)
+	planHandler := plans.NewHandler(planSvc)
+
 	r := chi.NewRouter()
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -39,6 +43,12 @@ func main() {
 	r.Group(func(r chi.Router) {
 		r.Use(auth.Middleware(cfg.JWTSecret))
 		r.Get("/exercises", exerciseHandler.List)
+		r.Get("/plans", planHandler.ListPlans)
+		r.Post("/plans", planHandler.CreatePlan)
+		r.Delete("/plans/{id}", planHandler.DeletePlan)
+		r.Get("/plans/{id}/days", planHandler.ListDays)
+		r.Post("/plans/{id}/days", planHandler.CreateDay)
+		r.Post("/plans/{id}/days/{dayId}/exercises", planHandler.AddExercise)
 	})
 
 	addr := fmt.Sprintf(":%s", cfg.Port)
