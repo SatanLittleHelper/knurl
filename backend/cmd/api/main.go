@@ -32,6 +32,11 @@ func main() {
 	r.Post("/auth/register", authHandler.Register)
 	r.Post("/auth/login", authHandler.Login)
 
+	r.Group(func(r chi.Router) {
+		r.Use(auth.Middleware(cfg.JWTSecret))
+		// Protected routes will be added here
+	})
+
 	addr := fmt.Sprintf(":%s", cfg.Port)
 	log.Printf("server started on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, r))
