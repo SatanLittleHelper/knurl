@@ -55,7 +55,8 @@ docker compose up -d
 
 **Layer structure per domain package** (`internal/<domain>/`):
 - `models.go` — GORM structs with `uuid` PKs and soft-delete via `gorm.DeletedAt`
-- `service.go` — business logic, talks directly to `*gorm.DB`
+- `repository.go` — `XxxRepository` interface + `gormXxxRepo` GORM implementation + `NewGormXxxRepo` constructor
+- `service.go` — business logic, accepts `XxxRepository` interface (not `*gorm.DB` directly)
 - `handler.go` — HTTP layer, decodes requests, calls service, uses `api.Respond`/`api.Error`
 
 **Shared utilities** (`internal/api/`):
