@@ -1,4 +1,3 @@
-// backend/internal/auth/service_test.go
 package auth_test
 
 import (
@@ -7,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/satanlittlehelper/knurl/backend/internal/auth"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -56,7 +54,7 @@ func TestRegister_InvalidEmail(t *testing.T) {
 }
 
 func TestRegister_EmailTaken(t *testing.T) {
-	repo := &mockUserRepo{createErr: &pgconn.PgError{Code: "23505"}}
+	repo := &mockUserRepo{createErr: auth.ErrEmailTaken}
 	svc := auth.NewService(repo, testJWTSecret)
 	_, err := svc.Register(context.Background(), "user@example.com", "password123")
 	if !errors.Is(err, auth.ErrEmailTaken) {

@@ -9,12 +9,13 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"
 )
 
 var ErrInvalidCredentials = errors.New("invalid credentials")
 var ErrEmailTaken = errors.New("email already taken")
+
+const tokenTTL = 30 * 24 * time.Hour
 
 type Service struct {
 	repo      UserRepository
@@ -43,9 +44,6 @@ func (s *Service) Register(ctx context.Context, email, password string) (string,
 
 	user := User{Email: email, PasswordHash: string(hash)}
 	if err := s.repo.Create(ctx, &user); err != nil {
-		if isUniqueViolation(err) {
-			return "", ErrEmailTaken
-		}
 		return "", err
 	}
 
@@ -68,12 +66,7 @@ func (s *Service) Login(ctx context.Context, email, password string) (string, er
 func (s *Service) issueToken(userID uuid.UUID) (string, error) {
 	claims := jwt.MapClaims{
 		"sub": userID.String(),
-		"exp": time.Now().Add(30 * 24 * time.Hour).Unix(),
+		"exp": time.Now().Add(tokenTTL).Unix(),
 	}
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(s.jwtSecret)
-}
-
-func isUniqueViolation(err error) bool {
-	var pgErr *pgconn.PgError
-	return errors.As(err, &pgErr) && pgErr.Code == "23505"
 }

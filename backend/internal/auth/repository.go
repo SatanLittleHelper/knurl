@@ -2,7 +2,9 @@ package auth
 
 import (
 	"context"
+	"errors"
 
+	"github.com/jackc/pgx/v5/pgconn"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +22,13 @@ func NewGormUserRepo(db *gorm.DB) UserRepository {
 }
 
 func (r *gormUserRepo) Create(ctx context.Context, user *User) error {
-	return r.db.WithContext(ctx).Create(user).Error
+	if err := r.db.WithContext(ctx).Create(user).Error; err != nil {
+		if isUniqueViolation(err) {
+			return ErrEmailTaken
+		}
+		return err
+	}
+	return nil
 }
 
 func (r *gormUserRepo) FindByEmail(ctx context.Context, email string) (*User, error) {
@@ -29,4 +37,9 @@ func (r *gormUserRepo) FindByEmail(ctx context.Context, email string) (*User, er
 		return nil, err
 	}
 	return &user, nil
+}
+
+func isUniqueViolation(err error) bool {
+	var pgErr *pgconn.PgError
+	return errors.As(err, &pgErr) && pgErr.Code == "23505"
 }
