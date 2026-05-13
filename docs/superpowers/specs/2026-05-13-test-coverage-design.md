@@ -1,63 +1,63 @@
-# Test Coverage Design — Repository Pattern + Service Tests
+# Дизайн: покрытие тестами — паттерн Repository + тесты сервисов
 
-**Date:** 2026-05-13  
-**Scope:** All service packages in `backend/internal/`
-
----
-
-## Context
-
-Currently only two packages have tests:
-- `internal/api` — 83.3% (shared HTTP helpers)
-- `internal/auth` — 25.3% (middleware only; service and handler untested)
-
-All other packages (`exercises`, `plans`, `sessions`, `sets`) have 0% coverage.
-
-Handlers are thin (decode → call service → map error to status) and are not worth testing in isolation. All meaningful logic lives in the service layer.
+**Дата:** 2026-05-13  
+**Область:** все сервисные пакеты в `backend/internal/`
 
 ---
 
-## Approach
+## Контекст
 
-**Repository interface pattern (Approach A):** each package gets a `repository.go` file containing:
-1. A `XxxRepository` interface that defines the storage contract
-2. A `gormXxxRepo` struct that implements it via GORM
+На данный момент тесты есть только в двух пакетах:
+- `internal/api` — 83.3% (общие HTTP-хелперы)
+- `internal/auth` — 25.3% (только middleware; сервис и хендлер не покрыты)
 
-`service.go` is refactored to accept the interface instead of `*gorm.DB`. `cmd/api/main.go` is updated to pass `gormXxxRepo{db}` when constructing services. No new packages are introduced.
+Остальные пакеты (`exercises`, `plans`, `sessions`, `sets`) — 0% покрытия.
+
+Хендлеры тонкие (декодировать → вызвать сервис → замапить ошибку на статус) и не стоят затрат на моки. Вся значимая логика находится в сервисном слое.
 
 ---
 
-## File Layout Changes
+## Подход
+
+**Паттерн Repository-интерфейс (Вариант A):** каждый пакет получает файл `repository.go`, содержащий:
+1. Интерфейс `XxxRepository` — контракт хранилища
+2. Структуру `gormXxxRepo` — реализация через GORM
+
+`service.go` рефакторится: вместо `*gorm.DB` принимает интерфейс. `cmd/api/main.go` обновляется — при создании сервисов передаётся `gormXxxRepo{db}`. Новые пакеты не создаются.
+
+---
+
+## Изменения в файловой структуре
 
 ```
 internal/
   auth/
-    repository.go       ← new: UserRepository + gormUserRepo
-    service.go          ← refactor: *gorm.DB → UserRepository
-    service_test.go     ← new
+    repository.go       ← новый: UserRepository + gormUserRepo
+    service.go          ← рефактор: *gorm.DB → UserRepository
+    service_test.go     ← новый
   exercises/
-    repository.go       ← new: ExerciseRepository + gormExerciseRepo
-    service.go          ← refactor
-    service_test.go     ← new
+    repository.go       ← новый: ExerciseRepository + gormExerciseRepo
+    service.go          ← рефактор
+    service_test.go     ← новый
   plans/
-    repository.go       ← new: PlanRepository + gormPlanRepo
-    service.go          ← refactor
-    service_test.go     ← new
+    repository.go       ← новый: PlanRepository + gormPlanRepo
+    service.go          ← рефактор
+    service_test.go     ← новый
   sessions/
-    repository.go       ← new: SessionRepository + gormSessionRepo
-    service.go          ← refactor
-    service_test.go     ← new
+    repository.go       ← новый: SessionRepository + gormSessionRepo
+    service.go          ← рефактор
+    service_test.go     ← новый
   sets/
-    repository.go       ← new: SetRepository + gormSetRepo
-    service.go          ← refactor
-    service_test.go     ← new
+    repository.go       ← новый: SetRepository + gormSetRepo
+    service.go          ← рефактор
+    service_test.go     ← новый
 ```
 
-`cmd/api/main.go` passes concrete repo structs to `NewService(...)` instead of raw `*gorm.DB`.
+`cmd/api/main.go` передаёт конкретные repo-структуры в `NewService(...)` вместо голого `*gorm.DB`.
 
 ---
 
-## Repository Interfaces
+## Интерфейсы репозиториев
 
 ### auth
 ```go
@@ -110,75 +110,75 @@ type SetRepository interface {
 
 ---
 
-## Test Cases
+## Тест-кейсы
 
 ### auth/service_test.go
 
-| Method | Case |
-|--------|------|
-| `Register` | success → returns JWT string |
-| `Register` | password < 6 chars → error |
-| `Register` | invalid email → error |
-| `Register` | repo returns unique violation → `ErrEmailTaken` |
-| `Register` | repo returns other error → propagated |
-| `Login` | success → returns JWT string |
-| `Login` | user not found → `ErrInvalidCredentials` |
-| `Login` | wrong password → `ErrInvalidCredentials` |
+| Метод | Кейс |
+|-------|------|
+| `Register` | успех → возвращает JWT-строку |
+| `Register` | пароль < 6 символов → ошибка |
+| `Register` | невалидный email → ошибка |
+| `Register` | repo вернул unique violation → `ErrEmailTaken` |
+| `Register` | repo вернул другую ошибку → проброс |
+| `Login` | успех → возвращает JWT-строку |
+| `Login` | пользователь не найден → `ErrInvalidCredentials` |
+| `Login` | неверный пароль → `ErrInvalidCredentials` |
 
 ### exercises/service_test.go
 
-| Method | Case |
-|--------|------|
-| `List` | cache fresh → provider not called |
-| `List` | cache stale → calls provider, then reads from repo |
-| `List` | provider returns error → still reads from repo |
-| `List` | muscle filter → passed through to repo |
+| Метод | Кейс |
+|-------|------|
+| `List` | кэш свежий → провайдер не вызывается |
+| `List` | кэш протух → вызывает провайдер, затем читает из repo |
+| `List` | провайдер вернул ошибку → всё равно читает из repo |
+| `List` | фильтр по muscle → передаётся в repo |
 
 ### plans/service_test.go
 
-| Method | Case |
-|--------|------|
-| `ListPlans` | success |
-| `ListPlans` | repo error → propagated |
-| `CreatePlan` | success |
-| `DeletePlan` | success |
-| `ListDays` | success |
-| `CreateDay` | success |
-| `AddExercise` | success |
+| Метод | Кейс |
+|-------|------|
+| `ListPlans` | успех |
+| `ListPlans` | ошибка repo → проброс |
+| `CreatePlan` | успех |
+| `DeletePlan` | успех |
+| `ListDays` | успех |
+| `CreateDay` | успех |
+| `AddExercise` | успех |
 
 ### sessions/service_test.go
 
-| Method | Case |
-|--------|------|
-| `List` | success |
-| `Create` | success — userID assigned to session |
-| `Finish` | success |
-| `Delete` | success |
-| each | repo error → propagated |
+| Метод | Кейс |
+|-------|------|
+| `List` | успех |
+| `Create` | успех — userID присваивается сессии |
+| `Finish` | успех |
+| `Delete` | успех |
+| каждый | ошибка repo → проброс |
 
 ### sets/service_test.go
 
-| Method | Case |
-|--------|------|
-| `List` | success |
-| `Create` | success — sessionID assigned |
-| `Update` | success — FindByID called first, then Update |
-| `Update` | FindByID error → propagated |
-| `Delete` | success |
-| each | repo error → propagated |
+| Метод | Кейс |
+|-------|------|
+| `List` | успех |
+| `Create` | успех — sessionID присваивается |
+| `Update` | успех — сначала вызывается FindByID, затем Update |
+| `Update` | ошибка FindByID → проброс |
+| `Delete` | успех |
+| каждый | ошибка repo → проброс |
 
 ---
 
-## Error Handling
+## Обработка ошибок
 
-- Service methods propagate repo errors as-is, except `auth` which maps specific DB errors to domain errors (`ErrEmailTaken`, `ErrInvalidCredentials`).
-- Mock implementations in tests return configurable `error` values to exercise all error paths.
-- `isUniqueViolation` in `auth/service.go` is tested indirectly via the `Register` unique violation case.
+- Методы сервисов пробрасывают ошибки repo как есть, кроме `auth` — там конкретные DB-ошибки маппятся в доменные (`ErrEmailTaken`, `ErrInvalidCredentials`).
+- Моки в тестах возвращают настраиваемые значения `error` для покрытия всех путей ошибок.
+- `isUniqueViolation` в `auth/service.go` тестируется косвенно через кейс unique violation в `Register`.
 
 ---
 
-## Out of Scope
+## Вне области
 
-- Handler tests (`handler.go`) — too thin to justify the mock overhead.
-- Integration tests against real PostgreSQL — separate concern, not part of this change.
-- `internal/config` and `internal/db` — trivial wrappers around `os.Getenv` and GORM open; not worth mocking.
+- Тесты хендлеров (`handler.go`) — слишком тонкие, не оправдывают мок-оверхед.
+- Интеграционные тесты против реального PostgreSQL — отдельная задача.
+- `internal/config` и `internal/db` — тривиальные обёртки, не требуют тестирования.
