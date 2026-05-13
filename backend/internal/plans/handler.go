@@ -18,10 +18,10 @@ func (h *Handler) ListPlans(w http.ResponseWriter, r *http.Request) {
 	userID, _ := auth.UserIDFromCtx(r.Context())
 	plans, err := h.svc.ListPlans(userID)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		api.Error(w, http.StatusInternalServerError, "internal error")
 		return
 	}
-	api.Respond(w, plans)
+	api.Respond(w, http.StatusOK, plans)
 }
 
 func (h *Handler) CreatePlan(w http.ResponseWriter, r *http.Request) {
@@ -30,85 +30,82 @@ func (h *Handler) CreatePlan(w http.ResponseWriter, r *http.Request) {
 		Name string `json:"name"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil || body.Name == "" {
-		http.Error(w, "name required", http.StatusBadRequest)
+		api.Error(w, http.StatusBadRequest, "name required")
 		return
 	}
 	plan, err := h.svc.CreatePlan(userID, body.Name)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		api.Error(w, http.StatusInternalServerError, "internal error")
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	api.Respond(w, plan)
+	api.Respond(w, http.StatusCreated, plan)
 }
 
 func (h *Handler) DeletePlan(w http.ResponseWriter, r *http.Request) {
 	userID, _ := auth.UserIDFromCtx(r.Context())
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
-		http.Error(w, "invalid id", http.StatusBadRequest)
+		api.Error(w, http.StatusBadRequest, "invalid id")
 		return
 	}
 	if err := h.svc.DeletePlan(id, userID); err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		api.Error(w, http.StatusInternalServerError, "internal error")
 		return
 	}
-	w.WriteHeader(http.StatusNoContent)
+	api.NoContent(w)
 }
 
 func (h *Handler) ListDays(w http.ResponseWriter, r *http.Request) {
 	planID, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
-		http.Error(w, "invalid id", http.StatusBadRequest)
+		api.Error(w, http.StatusBadRequest, "invalid id")
 		return
 	}
 	days, err := h.svc.ListDays(planID)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		api.Error(w, http.StatusInternalServerError, "internal error")
 		return
 	}
-	api.Respond(w, days)
+	api.Respond(w, http.StatusOK, days)
 }
 
 func (h *Handler) CreateDay(w http.ResponseWriter, r *http.Request) {
 	planID, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
-		http.Error(w, "invalid id", http.StatusBadRequest)
+		api.Error(w, http.StatusBadRequest, "invalid id")
 		return
 	}
 	var body struct {
 		DayOfWeek int `json:"day_of_week"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
+		api.Error(w, http.StatusBadRequest, "bad request")
 		return
 	}
 	day, err := h.svc.CreateDay(planID, body.DayOfWeek)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		api.Error(w, http.StatusInternalServerError, "internal error")
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	api.Respond(w, day)
+	api.Respond(w, http.StatusCreated, day)
 }
 
 func (h *Handler) AddExercise(w http.ResponseWriter, r *http.Request) {
 	dayID, err := uuid.Parse(chi.URLParam(r, "dayId"))
 	if err != nil {
-		http.Error(w, "invalid day id", http.StatusBadRequest)
+		api.Error(w, http.StatusBadRequest, "invalid day id")
 		return
 	}
 	var body PlannedExercise
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
+		api.Error(w, http.StatusBadRequest, "bad request")
 		return
 	}
 	body.DayID = dayID
 	ex, err := h.svc.AddExercise(body)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		api.Error(w, http.StatusInternalServerError, "internal error")
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	api.Respond(w, ex)
+	api.Respond(w, http.StatusCreated, ex)
 }
