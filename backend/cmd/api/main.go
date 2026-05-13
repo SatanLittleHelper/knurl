@@ -10,6 +10,7 @@ import (
 	"github.com/satanlittlehelper/knurl/backend/internal/auth"
 	"github.com/satanlittlehelper/knurl/backend/internal/config"
 	"github.com/satanlittlehelper/knurl/backend/internal/db"
+	"github.com/satanlittlehelper/knurl/backend/internal/exercises"
 )
 
 func main() {
@@ -24,6 +25,9 @@ func main() {
 	authSvc := auth.NewService(database, cfg.JWTSecret)
 	authHandler := auth.NewHandler(authSvc)
 
+	exerciseSvc := exercises.NewService(database, exercises.StubProvider{})
+	exerciseHandler := exercises.NewHandler(exerciseSvc)
+
 	r := chi.NewRouter()
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -34,7 +38,7 @@ func main() {
 
 	r.Group(func(r chi.Router) {
 		r.Use(auth.Middleware(cfg.JWTSecret))
-		// Protected routes will be added here
+		r.Get("/exercises", exerciseHandler.List)
 	})
 
 	addr := fmt.Sprintf(":%s", cfg.Port)
