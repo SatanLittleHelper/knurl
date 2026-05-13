@@ -15,7 +15,7 @@ class KnurlApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Knurl',
       theme: appTheme,
-      routerConfig: router,
+      routerConfig: ref.watch(routerProvider),
     );
   }
 }
