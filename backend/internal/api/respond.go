@@ -5,7 +5,16 @@ import (
 	"net/http"
 )
 
-func Respond(w http.ResponseWriter, v any) {
+func Respond(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(v)
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(v) //nolint:errcheck
+}
+
+func Error(w http.ResponseWriter, status int, message string) {
+	Respond(w, status, map[string]string{"error": message})
+}
+
+func NoContent(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNoContent)
 }
