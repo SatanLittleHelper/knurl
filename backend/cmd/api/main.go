@@ -37,7 +37,7 @@ func main() {
 	sessionSvc := sessions.NewService(sessions.NewGormSessionRepo(database))
 	sessionHandler := sessions.NewHandler(sessionSvc)
 
-	setSvc := sets.NewService(database)
+	setSvc := sets.NewService(sets.NewGormSetRepo(database))
 	setHandler := sets.NewHandler(setSvc)
 
 	r := chi.NewRouter()
