@@ -28,7 +28,7 @@ func main() {
 	authSvc := auth.NewService(auth.NewGormUserRepo(database), cfg.JWTSecret)
 	authHandler := auth.NewHandler(authSvc)
 
-	exerciseSvc := exercises.NewService(database, exercises.StubProvider{})
+	exerciseSvc := exercises.NewService(exercises.NewGormExerciseRepo(database), exercises.StubProvider{})
 	exerciseHandler := exercises.NewHandler(exerciseSvc)
 
 	planSvc := plans.NewService(database)
