@@ -10,11 +10,14 @@
 
 ---
 
-### Task 1: Создать Flutter-проект и настроить pubspec.yaml
+### Task 1: Создать Flutter-проект, настроить pubspec.yaml и файл окружения
 
 **Files:**
 - Create: `mobile/` (flutter create)
 - Modify: `mobile/pubspec.yaml`
+- Create: `mobile/.env.local.json` (не в git)
+- Create: `mobile/.env.example.json`
+- Modify: `mobile/.gitignore`
 
 - [ ] **Шаг 1: Создать проект**
 
@@ -50,7 +53,33 @@ dev_dependencies:
   drift_dev: ^2.21.0
 ```
 
-- [ ] **Шаг 3: Установить зависимости**
+- [ ] **Шаг 3: Создать файл переменных окружения**
+
+Flutter поддерживает `--dart-define-from-file=<path>` — удобнее, чем передавать каждую переменную отдельно.
+
+Создать `mobile/.env.example.json` (шаблон, коммитится в git):
+
+```json
+{
+  "API_URL": "http://localhost:8080"
+}
+```
+
+Создать `mobile/.env.local.json` (реальные значения, не в git):
+
+```json
+{
+  "API_URL": "http://localhost:8080"
+}
+```
+
+Добавить в `mobile/.gitignore` строку:
+
+```
+.env.local.json
+```
+
+- [ ] **Шаг 4: Установить зависимости**
 
 ```bash
 cd /Users/aleksandr/WebstormProjects/knurl/mobile
@@ -59,11 +88,11 @@ flutter pub get
 
 Ожидаемый вывод: `Got dependencies!`
 
-- [ ] **Шаг 4: Закоммитить**
+- [ ] **Шаг 5: Закоммитить**
 
 ```bash
 git add mobile/
-git commit -m "feat: инициализация Flutter-проекта с зависимостями"
+git commit -m "feat: инициализация Flutter-проекта с зависимостями и env-файлами"
 ```
 
 ---
@@ -290,14 +319,19 @@ flutter analyze
 - [ ] **Шаг 3: Проверить сборку**
 
 ```bash
-flutter build apk --debug --dart-define=API_URL=http://localhost:8080
+flutter build apk --debug --dart-define-from-file=.env.local.json
 ```
 
 Ожидаемый вывод: `Built build/app/outputs/flutter-apk/app-debug.apk`
 
 Если нет Android SDK — проверить через iOS:
 ```bash
-flutter build ios --debug --no-codesign --dart-define=API_URL=http://localhost:8080
+flutter build ios --debug --no-codesign --dart-define-from-file=.env.local.json
+```
+
+При локальном запуске через `flutter run` также использовать:
+```bash
+flutter run --dart-define-from-file=.env.local.json
 ```
 
 - [ ] **Шаг 4: Закоммитить**
