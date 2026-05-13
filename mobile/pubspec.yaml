@@ -37,6 +37,9 @@ dependencies:
   drift: ^2.21.0
   sqlite3_flutter_libs: ^0.5.0
   flutter_secure_storage: ^9.2.2
+  path_provider: ^2.1.0
+  path: ^1.9.0
+  uuid: ^4.5.0  # UUID generation for client-side IDs (used in service layer)
 
 dev_dependencies:
   flutter_test:
