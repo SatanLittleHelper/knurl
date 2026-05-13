@@ -15,7 +15,7 @@
 **Files:**
 - Create: `mobile/` (flutter create)
 - Modify: `mobile/pubspec.yaml`
-- Create: `mobile/.env.local.json` (не в git)
+- Create: `mobile/.env.json` (не в git)
 - Create: `mobile/.env.example.json`
 - Modify: `mobile/.gitignore`
 
@@ -65,7 +65,7 @@ Flutter поддерживает `--dart-define-from-file=<path>` — удобн
 }
 ```
 
-Создать `mobile/.env.local.json` (реальные значения, не в git):
+Создать `mobile/.env.json` (реальные значения, не в git):
 
 ```json
 {
@@ -76,7 +76,7 @@ Flutter поддерживает `--dart-define-from-file=<path>` — удобн
 Добавить в `mobile/.gitignore` строку:
 
 ```
-.env.local.json
+.env.json
 ```
 
 - [ ] **Шаг 4: Установить зависимости**
@@ -319,19 +319,19 @@ flutter analyze
 - [ ] **Шаг 3: Проверить сборку**
 
 ```bash
-flutter build apk --debug --dart-define-from-file=.env.local.json
+flutter build apk --debug --dart-define-from-file=.env.json
 ```
 
 Ожидаемый вывод: `Built build/app/outputs/flutter-apk/app-debug.apk`
 
 Если нет Android SDK — проверить через iOS:
 ```bash
-flutter build ios --debug --no-codesign --dart-define-from-file=.env.local.json
+flutter build ios --debug --no-codesign --dart-define-from-file=.env.json
 ```
 
 При локальном запуске через `flutter run` также использовать:
 ```bash
-flutter run --dart-define-from-file=.env.local.json
+flutter run --dart-define-from-file=.env.json
 ```
 
 - [ ] **Шаг 4: Закоммитить**
