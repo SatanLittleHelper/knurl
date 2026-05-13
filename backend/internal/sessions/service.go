@@ -4,34 +4,25 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
-type Service struct{ db *gorm.DB }
+type Service struct{ repo SessionRepository }
 
-func NewService(db *gorm.DB) *Service { return &Service{db: db} }
+func NewService(repo SessionRepository) *Service { return &Service{repo: repo} }
 
 func (s *Service) List(userID uuid.UUID) ([]WorkoutSession, error) {
-	var sessions []WorkoutSession
-	result := s.db.Where("user_id = ?", userID).Order("started_at DESC").Find(&sessions)
-	return sessions, result.Error
+	return s.repo.List(userID)
 }
 
 func (s *Service) Create(userID uuid.UUID, sess WorkoutSession) (WorkoutSession, error) {
 	sess.UserID = userID
-	result := s.db.Create(&sess)
-	return sess, result.Error
+	return sess, s.repo.Create(&sess)
 }
 
 func (s *Service) Finish(id, userID uuid.UUID) error {
-	now := time.Now()
-	result := s.db.Model(&WorkoutSession{}).
-		Where("id = ? AND user_id = ?", id, userID).
-		Update("finished_at", now)
-	return result.Error
+	return s.repo.Finish(id, userID, time.Now())
 }
 
 func (s *Service) Delete(id, userID uuid.UUID) error {
-	result := s.db.Where("id = ? AND user_id = ?", id, userID).Delete(&WorkoutSession{})
-	return result.Error
+	return s.repo.Delete(id, userID)
 }

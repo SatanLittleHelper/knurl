@@ -34,7 +34,7 @@ func main() {
 	planSvc := plans.NewService(plans.NewGormPlanRepo(database))
 	planHandler := plans.NewHandler(planSvc)
 
-	sessionSvc := sessions.NewService(database)
+	sessionSvc := sessions.NewService(sessions.NewGormSessionRepo(database))
 	sessionHandler := sessions.NewHandler(sessionSvc)
 
 	setSvc := sets.NewService(database)
