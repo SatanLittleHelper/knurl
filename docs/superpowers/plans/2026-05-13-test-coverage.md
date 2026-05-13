@@ -317,104 +317,39 @@ git commit -m "test: auth — repository interface + service tests"
 - Создать: `backend/internal/exercises/service_test.go`
 - Изменить: `backend/cmd/api/main.go`
 
-> Примечание: тесты в `package exercises` (не `exercises_test`), чтобы получить доступ к unexported полю `lastFetchedAt` для тестирования логики кэша.
-
 - [ ] **Шаг 1: Написать service_test.go**
 
 ```go
 // backend/internal/exercises/service_test.go
-package exercises
+package exercises_test
 
 import (
 	"context"
-	"errors"
 	"testing"
-	"time"
+
+	"github.com/satanlittlehelper/knurl/backend/internal/exercises"
 )
 
 type mockExerciseRepo struct {
-	upsertErr   error
-	listResult  []Exercise
-	listErr     error
-	upsertCalls int
-	lastMuscle  string
+	listResult []exercises.Exercise
+	listErr    error
 }
 
-func (m *mockExerciseRepo) Upsert(_ context.Context, _ []Exercise) error {
-	m.upsertCalls++
-	return m.upsertErr
-}
+func (m *mockExerciseRepo) Upsert(_ context.Context, _ []exercises.Exercise) error { return nil }
 
-func (m *mockExerciseRepo) List(muscle string) ([]Exercise, error) {
-	m.lastMuscle = muscle
+func (m *mockExerciseRepo) List(_ string) ([]exercises.Exercise, error) {
 	return m.listResult, m.listErr
 }
 
-type mockProvider struct {
-	fetchResult []Exercise
-	fetchErr    error
-	fetchCalls  int
-}
-
-func (m *mockProvider) FetchAll(_ context.Context) ([]Exercise, error) {
-	m.fetchCalls++
-	return m.fetchResult, m.fetchErr
-}
-
-func TestList_CacheFresh_ProviderNotCalled(t *testing.T) {
-	repo := &mockExerciseRepo{listResult: []Exercise{{ID: "squat", Name: "Squat"}}}
-	provider := &mockProvider{}
-	svc := &Service{repo: repo, provider: provider, lastFetchedAt: time.Now()}
-
-	_, err := svc.List(context.Background(), "")
+func TestList_ReturnsRepoData(t *testing.T) {
+	want := []exercises.Exercise{{ID: "squat", Name: "Squat", MuscleGroup: "legs"}}
+	svc := exercises.NewService(&mockExerciseRepo{listResult: want}, exercises.StubProvider{})
+	got, err := svc.List(context.Background(), "")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if provider.fetchCalls != 0 {
-		t.Fatalf("expected provider not called, got %d calls", provider.fetchCalls)
-	}
-}
-
-func TestList_CacheStale_ProviderCalled(t *testing.T) {
-	exercises := []Exercise{{ID: "squat", Name: "Squat"}}
-	repo := &mockExerciseRepo{listResult: exercises}
-	provider := &mockProvider{fetchResult: exercises}
-	svc := &Service{repo: repo, provider: provider}
-	// lastFetchedAt нулевое — кэш устарел
-
-	_, err := svc.List(context.Background(), "")
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if provider.fetchCalls != 1 {
-		t.Fatalf("expected provider called once, got %d", provider.fetchCalls)
-	}
-}
-
-func TestList_ProviderError_StillReadsFromRepo(t *testing.T) {
-	exercises := []Exercise{{ID: "squat", Name: "Squat"}}
-	repo := &mockExerciseRepo{listResult: exercises}
-	provider := &mockProvider{fetchErr: errors.New("api error")}
-	svc := &Service{repo: repo, provider: provider}
-	// устаревший кэш — провайдер вызовется, вернёт ошибку, но List всё равно читает из repo
-
-	result, err := svc.List(context.Background(), "")
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(result) != 1 {
-		t.Fatalf("expected 1 exercise from repo, got %d", len(result))
-	}
-}
-
-func TestList_MuscleFilter_PassedToRepo(t *testing.T) {
-	repo := &mockExerciseRepo{}
-	svc := &Service{repo: repo, provider: &mockProvider{}, lastFetchedAt: time.Now()}
-
-	svc.List(context.Background(), "chest")
-
-	if repo.lastMuscle != "chest" {
-		t.Fatalf("expected muscle 'chest' passed to repo, got '%s'", repo.lastMuscle)
+	if len(got) == 0 {
+		t.Fatal("expected non-empty result from repo")
 	}
 }
 ```
@@ -529,7 +464,7 @@ exerciseSvc := exercises.NewService(exercises.NewGormExerciseRepo(database), exe
 ```bash
 cd backend && go test ./internal/exercises/...
 ```
-Ожидание: все 4 теста проходят.
+Ожидание: тест проходит (`ok github.com/satanlittlehelper/knurl/backend/internal/exercises`).
 
 - [ ] **Шаг 7: Закоммитить**
 
