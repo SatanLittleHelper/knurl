@@ -28,16 +28,16 @@ func main() {
 	authSvc := auth.NewService(auth.NewGormUserRepo(database), cfg.JWTSecret)
 	authHandler := auth.NewHandler(authSvc)
 
-	exerciseSvc := exercises.NewService(database, exercises.StubProvider{})
+	exerciseSvc := exercises.NewService(exercises.NewGormExerciseRepo(database), exercises.StubProvider{})
 	exerciseHandler := exercises.NewHandler(exerciseSvc)
 
-	planSvc := plans.NewService(database)
+	planSvc := plans.NewService(plans.NewGormPlanRepo(database))
 	planHandler := plans.NewHandler(planSvc)
 
-	sessionSvc := sessions.NewService(database)
+	sessionSvc := sessions.NewService(sessions.NewGormSessionRepo(database))
 	sessionHandler := sessions.NewHandler(sessionSvc)
 
-	setSvc := sets.NewService(database)
+	setSvc := sets.NewService(sets.NewGormSetRepo(database))
 	setHandler := sets.NewHandler(setSvc)
 
 	r := chi.NewRouter()

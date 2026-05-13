@@ -1,37 +1,29 @@
 package sets
 
-import (
-	"github.com/google/uuid"
-	"gorm.io/gorm"
-)
+import "github.com/google/uuid"
 
-type Service struct{ db *gorm.DB }
+type Service struct{ repo SetRepository }
 
-func NewService(db *gorm.DB) *Service { return &Service{db: db} }
+func NewService(repo SetRepository) *Service { return &Service{repo: repo} }
 
 func (s *Service) List(sessionID uuid.UUID) ([]SetLog, error) {
-	var logs []SetLog
-	result := s.db.Where("session_id = ?", sessionID).Order("completed_at").Find(&logs)
-	return logs, result.Error
+	return s.repo.List(sessionID)
 }
 
 func (s *Service) Create(sessionID uuid.UUID, log SetLog) (SetLog, error) {
 	log.SessionID = sessionID
-	result := s.db.Create(&log)
-	return log, result.Error
+	return log, s.repo.Create(&log)
 }
 
 func (s *Service) Update(id uuid.UUID, patch SetLog) (SetLog, error) {
-	var log SetLog
-	if err := s.db.First(&log, "id = ?", id).Error; err != nil {
+	existing, err := s.repo.FindByID(id)
+	if err != nil {
 		return SetLog{}, err
 	}
 	patch.ID = id
-	result := s.db.Model(&log).Updates(patch)
-	return log, result.Error
+	return s.repo.Update(existing, patch)
 }
 
 func (s *Service) Delete(id uuid.UUID) error {
-	result := s.db.Where("id = ?", id).Delete(&SetLog{})
-	return result.Error
+	return s.repo.Delete(id)
 }
