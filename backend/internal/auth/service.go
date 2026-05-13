@@ -9,24 +9,24 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 var ErrInvalidCredentials = errors.New("invalid credentials")
 var ErrEmailTaken = errors.New("email already taken")
 
+const tokenTTL = 30 * 24 * time.Hour
+
 type Service struct {
-	db        *gorm.DB
+	repo      UserRepository
 	jwtSecret []byte
 }
 
-func NewService(db *gorm.DB, jwtSecret string) *Service {
+func NewService(repo UserRepository, jwtSecret string) *Service {
 	if len(jwtSecret) < 32 {
 		log.Println("warning: JWT_SECRET is shorter than 32 bytes")
 	}
-	return &Service{db: db, jwtSecret: []byte(jwtSecret)}
+	return &Service{repo: repo, jwtSecret: []byte(jwtSecret)}
 }
 
 func (s *Service) Register(ctx context.Context, email, password string) (string, error) {
@@ -43,21 +43,16 @@ func (s *Service) Register(ctx context.Context, email, password string) (string,
 	}
 
 	user := User{Email: email, PasswordHash: string(hash)}
-	result := s.db.WithContext(ctx).Create(&user)
-	if result.Error != nil {
-		if isUniqueViolation(result.Error) {
-			return "", ErrEmailTaken
-		}
-		return "", result.Error
+	if err := s.repo.Create(ctx, &user); err != nil {
+		return "", err
 	}
 
 	return s.issueToken(user.ID)
 }
 
 func (s *Service) Login(ctx context.Context, email, password string) (string, error) {
-	var user User
-	result := s.db.WithContext(ctx).Where("email = ?", email).First(&user)
-	if result.Error != nil {
+	user, err := s.repo.FindByEmail(ctx, email)
+	if err != nil {
 		return "", ErrInvalidCredentials
 	}
 
@@ -71,12 +66,7 @@ func (s *Service) Login(ctx context.Context, email, password string) (string, er
 func (s *Service) issueToken(userID uuid.UUID) (string, error) {
 	claims := jwt.MapClaims{
 		"sub": userID.String(),
-		"exp": time.Now().Add(30 * 24 * time.Hour).Unix(),
+		"exp": time.Now().Add(tokenTTL).Unix(),
 	}
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(s.jwtSecret)
-}
-
-func isUniqueViolation(err error) bool {
-	var pgErr *pgconn.PgError
-	return errors.As(err, &pgErr) && pgErr.Code == "23505"
 }
