@@ -7,6 +7,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"github.com/satanlittlehelper/knurl/backend/internal/api"
 )
 
 type contextKey string
@@ -21,7 +22,7 @@ func Middleware(jwtSecret string) func(http.Handler) http.Handler {
 			header := r.Header.Get("Authorization")
 
 			if !strings.HasPrefix(header, "Bearer ") {
-				http.Error(w, "unauthorized", http.StatusUnauthorized)
+				api.Error(w, http.StatusUnauthorized, "unauthorized")
 				return
 			}
 
@@ -34,19 +35,19 @@ func Middleware(jwtSecret string) func(http.Handler) http.Handler {
 				return secret, nil
 			})
 			if err != nil || !token.Valid {
-				http.Error(w, "unauthorized", http.StatusUnauthorized)
+				api.Error(w, http.StatusUnauthorized, "unauthorized")
 				return
 			}
 
 			sub, err := token.Claims.GetSubject()
 			if err != nil {
-				http.Error(w, "unauthorized", http.StatusUnauthorized)
+				api.Error(w, http.StatusUnauthorized, "unauthorized")
 				return
 			}
 
 			userID, err := uuid.Parse(sub)
 			if err != nil {
-				http.Error(w, "unauthorized", http.StatusUnauthorized)
+				api.Error(w, http.StatusUnauthorized, "unauthorized")
 				return
 			}
 
