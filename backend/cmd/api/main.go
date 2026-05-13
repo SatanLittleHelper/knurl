@@ -31,7 +31,7 @@ func main() {
 	exerciseSvc := exercises.NewService(exercises.NewGormExerciseRepo(database), exercises.StubProvider{})
 	exerciseHandler := exercises.NewHandler(exerciseSvc)
 
-	planSvc := plans.NewService(database)
+	planSvc := plans.NewService(plans.NewGormPlanRepo(database))
 	planHandler := plans.NewHandler(planSvc)
 
 	sessionSvc := sessions.NewService(database)
