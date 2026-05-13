@@ -7,32 +7,32 @@ final router = GoRouter(
     GoRoute(
       path: '/auth',
       builder: (context, state) =>
-          const Scaffold(appBar: AppBar(title: Text('Auth'))),
+          Scaffold(appBar: AppBar(title: const Text('Auth'))),
     ),
     GoRoute(
       path: '/',
       builder: (context, state) =>
-          const Scaffold(appBar: AppBar(title: Text('Home'))),
+          Scaffold(appBar: AppBar(title: const Text('Home'))),
     ),
     GoRoute(
       path: '/planner',
       builder: (context, state) =>
-          const Scaffold(appBar: AppBar(title: Text('Planner'))),
+          Scaffold(appBar: AppBar(title: const Text('Planner'))),
     ),
     GoRoute(
       path: '/workout',
       builder: (context, state) =>
-          const Scaffold(appBar: AppBar(title: Text('Active Workout'))),
+          Scaffold(appBar: AppBar(title: const Text('Active Workout'))),
     ),
     GoRoute(
       path: '/history',
       builder: (context, state) =>
-          const Scaffold(appBar: AppBar(title: Text('History'))),
+          Scaffold(appBar: AppBar(title: const Text('History'))),
     ),
     GoRoute(
       path: '/exercises',
       builder: (context, state) =>
-          const Scaffold(appBar: AppBar(title: Text('Exercise Library'))),
+          Scaffold(appBar: AppBar(title: const Text('Exercise Library'))),
     ),
   ],
 );
