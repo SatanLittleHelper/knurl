@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/satanlittlehelper/knurl/backend/internal/api"
 )
 
 type Handler struct {
@@ -17,12 +19,6 @@ func NewHandler(svc *Service) *Handler {
 	return &Handler{svc: svc}
 }
 
-func writeError(w http.ResponseWriter, message string, status int) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(map[string]string{"error": message}) //nolint:errcheck
-}
-
 type authRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -31,55 +27,47 @@ type authRequest struct {
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var req authRequest
 	if err := json.NewDecoder(io.LimitReader(r.Body, 1024)).Decode(&req); err != nil {
-		writeError(w, "bad request", http.StatusBadRequest)
+		api.Error(w, http.StatusBadRequest, "bad request")
 		return
 	}
 	req.Email = strings.TrimSpace(req.Email)
 	if req.Email == "" || req.Password == "" {
-		writeError(w, "email and password required", http.StatusBadRequest)
+		api.Error(w, http.StatusBadRequest, "email and password required")
 		return
 	}
 
 	token, err := h.svc.Register(r.Context(), req.Email, req.Password)
 	if errors.Is(err, ErrEmailTaken) {
-		writeError(w, "email already taken", http.StatusConflict)
+		api.Error(w, http.StatusConflict, "email already taken")
 		return
 	}
 	if err != nil {
 		log.Printf("register: %v", err)
-		writeError(w, "internal error", http.StatusInternalServerError)
+		api.Error(w, http.StatusInternalServerError, "internal error")
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(map[string]string{"token": token}); err != nil {
-		log.Printf("encode response: %v", err)
-	}
+	api.Respond(w, http.StatusCreated, map[string]string{"token": token})
 }
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var req authRequest
 	if err := json.NewDecoder(io.LimitReader(r.Body, 1024)).Decode(&req); err != nil {
-		writeError(w, "bad request", http.StatusBadRequest)
+		api.Error(w, http.StatusBadRequest, "bad request")
 		return
 	}
 	req.Email = strings.TrimSpace(req.Email)
 
 	token, err := h.svc.Login(r.Context(), req.Email, req.Password)
 	if errors.Is(err, ErrInvalidCredentials) {
-		writeError(w, "invalid credentials", http.StatusUnauthorized)
+		api.Error(w, http.StatusUnauthorized, "invalid credentials")
 		return
 	}
 	if err != nil {
 		log.Printf("login: %v", err)
-		writeError(w, "internal error", http.StatusInternalServerError)
+		api.Error(w, http.StatusInternalServerError, "internal error")
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(map[string]string{"token": token}); err != nil {
-		log.Printf("encode response: %v", err)
-	}
+	api.Respond(w, http.StatusOK, map[string]string{"token": token})
 }
