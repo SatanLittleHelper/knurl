@@ -25,7 +25,7 @@ func main() {
 		log.Fatalf("db connect: %v", err)
 	}
 
-	authSvc := auth.NewService(database, cfg.JWTSecret)
+	authSvc := auth.NewService(auth.NewGormUserRepo(database), cfg.JWTSecret)
 	authHandler := auth.NewHandler(authSvc)
 
 	exerciseSvc := exercises.NewService(database, exercises.StubProvider{})

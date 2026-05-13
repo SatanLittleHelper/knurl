@@ -11,22 +11,21 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 var ErrInvalidCredentials = errors.New("invalid credentials")
 var ErrEmailTaken = errors.New("email already taken")
 
 type Service struct {
-	db        *gorm.DB
+	repo      UserRepository
 	jwtSecret []byte
 }
 
-func NewService(db *gorm.DB, jwtSecret string) *Service {
+func NewService(repo UserRepository, jwtSecret string) *Service {
 	if len(jwtSecret) < 32 {
 		log.Println("warning: JWT_SECRET is shorter than 32 bytes")
 	}
-	return &Service{db: db, jwtSecret: []byte(jwtSecret)}
+	return &Service{repo: repo, jwtSecret: []byte(jwtSecret)}
 }
 
 func (s *Service) Register(ctx context.Context, email, password string) (string, error) {
@@ -43,21 +42,19 @@ func (s *Service) Register(ctx context.Context, email, password string) (string,
 	}
 
 	user := User{Email: email, PasswordHash: string(hash)}
-	result := s.db.WithContext(ctx).Create(&user)
-	if result.Error != nil {
-		if isUniqueViolation(result.Error) {
+	if err := s.repo.Create(ctx, &user); err != nil {
+		if isUniqueViolation(err) {
 			return "", ErrEmailTaken
 		}
-		return "", result.Error
+		return "", err
 	}
 
 	return s.issueToken(user.ID)
 }
 
 func (s *Service) Login(ctx context.Context, email, password string) (string, error) {
-	var user User
-	result := s.db.WithContext(ctx).Where("email = ?", email).First(&user)
-	if result.Error != nil {
+	user, err := s.repo.FindByEmail(ctx, email)
+	if err != nil {
 		return "", ErrInvalidCredentials
 	}
 
