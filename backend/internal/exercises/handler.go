@@ -1,8 +1,9 @@
 package exercises
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/satanlittlehelper/knurl/backend/internal/api"
 )
 
 type Handler struct {
@@ -17,9 +18,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	muscle := r.URL.Query().Get("muscle")
 	exercises, err := h.svc.List(r.Context(), muscle)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		api.Error(w, http.StatusInternalServerError, "internal error")
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(exercises)
+	api.Respond(w, http.StatusOK, exercises)
 }
