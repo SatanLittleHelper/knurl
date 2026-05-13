@@ -13,6 +13,7 @@ import (
 	"github.com/satanlittlehelper/knurl/backend/internal/exercises"
 	"github.com/satanlittlehelper/knurl/backend/internal/plans"
 	"github.com/satanlittlehelper/knurl/backend/internal/sessions"
+	"github.com/satanlittlehelper/knurl/backend/internal/sets"
 )
 
 func main() {
@@ -36,6 +37,9 @@ func main() {
 	sessionSvc := sessions.NewService(database)
 	sessionHandler := sessions.NewHandler(sessionSvc)
 
+	setSvc := sets.NewService(database)
+	setHandler := sets.NewHandler(setSvc)
+
 	r := chi.NewRouter()
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -57,6 +61,10 @@ func main() {
 		r.Post("/sessions", sessionHandler.Create)
 		r.Patch("/sessions/{id}/finish", sessionHandler.Finish)
 		r.Delete("/sessions/{id}", sessionHandler.Delete)
+		r.Get("/sessions/{sessionId}/sets", setHandler.List)
+		r.Post("/sessions/{sessionId}/sets", setHandler.Create)
+		r.Put("/sessions/{sessionId}/sets/{id}", setHandler.Update)
+		r.Delete("/sessions/{sessionId}/sets/{id}", setHandler.Delete)
 	})
 
 	addr := fmt.Sprintf(":%s", cfg.Port)
