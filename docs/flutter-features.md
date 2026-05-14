@@ -9,7 +9,6 @@
 1. [x] **Проект Flutter** — инициализация, структура папок, зависимости (drift, dio, riverpod/bloc, go_router)
 2. [x] **Локальная БД (SQLite/drift)** — схема таблиц (Exercise, WorkoutPlan, WorkoutDay, WorkoutSession, SetLog), миграции
 3. [ ] **API-клиент** — HTTP-клиент для Go-бэкенда, обработка ошибок, interceptors для JWT
-   - _TODO: добавить refresh token (сейчас только access token 30 дней) — реализовать вместе с фичей 4 Auth, когда бэкенд добавит эндпоинт_
 
 ### Экраны
 4. [ ] **Auth** — регистрация и вход (email + пароль), хранение и обновление JWT
@@ -21,6 +20,7 @@
 
 ### Фоновые сервисы
 10. [ ] **Sync Engine** — фоновая синхронизация записей с `synced = false` на Go-сервер, получение изменений с других устройств
+11. [ ] **Refresh Token** — эндпоинт на Go-бэкенде + interceptor на Flutter для автоматического обновления access token
 
 ## Статус
 
@@ -36,3 +36,4 @@
 | 8 | History | — | — | — |
 | 9 | Exercise Library | — | — | — |
 | 10 | Sync Engine | — | — | — |
+| 11 | Refresh Token | — | — | — |
