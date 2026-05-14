@@ -7,6 +7,10 @@ void main() {
       expect(validateEmail('user@example.com'), isNull);
     });
 
+    test('validateEmail returns null for a trimmed valid email', () {
+      expect(validateEmail('  user@example.com  '), isNull);
+    });
+
     test('validateEmail returns an error for empty string', () {
       expect(validateEmail(''), 'Введите email');
     });
@@ -25,6 +29,10 @@ void main() {
 
     test('validatePassword returns null for a non-empty password', () {
       expect(validatePassword('secret'), isNull);
+    });
+
+    test('validatePassword returns null for whitespace-only input', () {
+      expect(validatePassword('   '), isNull);
     });
 
     test('validatePassword returns an error for empty string', () {
