@@ -31,10 +31,6 @@ void main() {
       expect(validatePassword(''), 'Введите пароль');
     });
 
-    test('validatePassword returns an error for whitespace-only input', () {
-      expect(validatePassword('   '), 'Введите пароль');
-    });
-
     test('validatePassword returns an error for null', () {
       expect(validatePassword(null), 'Введите пароль');
     });
