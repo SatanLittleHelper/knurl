@@ -6,6 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Never use `cd` before git commands. Never use `-C` flag with git. Just run `git status`, `git add .`, `git commit`, etc. directly — git finds the repo on its own.
 
+- Never add `Co-Authored-By` or any AI attribution to commit messages.
+- Use `git add .` instead of listing individual files.
+- Commit once per feature, at the end — no intermediate commits between plan tasks.
+- Do not add a step to verify that tests fail before writing the implementation.
+
 ## Commands
 
 All commands run from the `backend/` directory.
