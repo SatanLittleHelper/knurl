@@ -8,19 +8,19 @@ void main() {
     });
 
     test('validateEmail returns an error for empty string', () {
-      expect(validateEmail(''), isNotNull);
+      expect(validateEmail(''), 'Введите email');
     });
 
     test('validateEmail returns an error for null', () {
-      expect(validateEmail(null), isNotNull);
+      expect(validateEmail(null), 'Введите email');
     });
 
     test('validateEmail returns an error for missing @', () {
-      expect(validateEmail('notanemail'), isNotNull);
+      expect(validateEmail('notanemail'), 'Введите корректный email');
     });
 
     test('validateEmail returns an error for whitespace-only input', () {
-      expect(validateEmail('   '), isNotNull);
+      expect(validateEmail('   '), 'Введите email');
     });
 
     test('validatePassword returns null for a non-empty password', () {
@@ -28,11 +28,15 @@ void main() {
     });
 
     test('validatePassword returns an error for empty string', () {
-      expect(validatePassword(''), isNotNull);
+      expect(validatePassword(''), 'Введите пароль');
+    });
+
+    test('validatePassword returns an error for whitespace-only input', () {
+      expect(validatePassword('   '), 'Введите пароль');
     });
 
     test('validatePassword returns an error for null', () {
-      expect(validatePassword(null), isNotNull);
+      expect(validatePassword(null), 'Введите пароль');
     });
   });
 }

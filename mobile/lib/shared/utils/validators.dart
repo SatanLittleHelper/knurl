@@ -13,7 +13,9 @@ String? validateEmail(String? value) {
 }
 
 String? validatePassword(String? value) {
-  if (value == null || value.isEmpty) {
+  final password = value?.trim();
+
+  if (password == null || password.isEmpty) {
     return 'Введите пароль';
   }
 
