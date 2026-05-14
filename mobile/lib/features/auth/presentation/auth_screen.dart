@@ -1,9 +1,10 @@
-// mobile/lib/features/auth/presentation/auth_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:knurl/features/auth/presentation/auth_controller.dart';
 import 'package:knurl/shared/utils/validators.dart';
 import 'package:knurl/shared/widgets/knurl_app_bar.dart';
+import 'package:knurl/shared/widgets/knurl_button.dart';
+import 'package:knurl/shared/widgets/knurl_text_field.dart';
 
 class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
@@ -62,14 +63,20 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  _EmailField(
+                  KnurlTextField(
                     controller: _emailController,
+                    label: 'Email',
+                    keyboardType: TextInputType.emailAddress,
                     enabled: !isLoading,
+                    validator: validateEmail,
                   ),
                   const SizedBox(height: 16),
-                  _PasswordField(
+                  KnurlTextField(
                     controller: _passwordController,
+                    label: 'Пароль',
+                    obscureText: true,
                     enabled: !isLoading,
+                    validator: validatePassword,
                   ),
                   const SizedBox(height: 16),
                   if (state.errorMessage != null) ...[
@@ -81,12 +88,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                     ),
                     const SizedBox(height: 12),
                   ],
-                  _SubmitButton(
-                    isLoading: isLoading,
+                  KnurlButton(
                     label: state.mode == AuthMode.signIn
                         ? 'Войти'
                         : 'Создать аккаунт',
                     onPressed: _submit,
+                    isLoading: isLoading,
                   ),
                 ],
               ),
@@ -117,70 +124,7 @@ class _ModeToggle extends StatelessWidget {
         ButtonSegment(value: AuthMode.signUp, label: Text('Регистрация')),
       ],
       selected: {mode},
-      onSelectionChanged:
-          enabled ? (s) => onChanged(s.first) : null,
-    );
-  }
-}
-
-class _EmailField extends StatelessWidget {
-  const _EmailField({required this.controller, required this.enabled});
-
-  final TextEditingController controller;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      enabled: enabled,
-      keyboardType: TextInputType.emailAddress,
-      decoration: const InputDecoration(labelText: 'Email'),
-      validator: validateEmail,
-    );
-  }
-}
-
-class _PasswordField extends StatelessWidget {
-  const _PasswordField({required this.controller, required this.enabled});
-
-  final TextEditingController controller;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      enabled: enabled,
-      obscureText: true,
-      decoration: const InputDecoration(labelText: 'Пароль'),
-      validator: validatePassword,
-    );
-  }
-}
-
-class _SubmitButton extends StatelessWidget {
-  const _SubmitButton({
-    required this.isLoading,
-    required this.label,
-    required this.onPressed,
-  });
-
-  final bool isLoading;
-  final String label;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return FilledButton(
-      onPressed: isLoading ? null : onPressed,
-      child: isLoading
-          ? const SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Text(label),
+      onSelectionChanged: enabled ? (s) => onChanged(s.first) : null,
     );
   }
 }
