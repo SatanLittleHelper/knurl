@@ -16,7 +16,7 @@ class AuthRepository {
       _authenticate('/auth/register', email, password);
 
   Future<void> _authenticate(String path, String email, String password) async {
-    final response = await _dio.post(
+    final response = await _dio.post<Map<String, dynamic>>(
       path,
       data: <String, String>{'email': email, 'password': password},
     );
@@ -24,12 +24,10 @@ class AuthRepository {
     await _tokenStorage.write(token);
   }
 
-  String _extractToken(dynamic data) {
-    if (data case final Map<String, dynamic> responseData) {
-      final token = responseData['token'];
-      if (token is String && token.isNotEmpty) {
-        return token;
-      }
+  String _extractToken(Map<String, dynamic>? data) {
+    final token = data?['token'];
+    if (token is String && token.isNotEmpty) {
+      return token;
     }
 
     throw StateError('Missing auth token in response');

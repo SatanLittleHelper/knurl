@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:knurl/features/auth/data/auth_repository.dart';
@@ -21,76 +18,62 @@ class FakeTokenStorage implements TokenStorage {
   Future<void> delete() async {}
 }
 
-class RecordingAdapter implements HttpClientAdapter {
-  RequestOptions? lastOptions;
+class FakeDio implements Dio {
+  String? path;
+  Object? data;
   Map<String, dynamic>? responseData;
 
   @override
-  Future<ResponseBody> fetch(
-    RequestOptions options,
-    Stream<Uint8List>? requestStream,
-    Future<void>? cancelFuture,
-  ) async {
-    lastOptions = options;
-    if (requestStream != null) {
-      await requestStream.drain();
-    }
+  Future<Response<T>> post<T>(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    this.path = path;
+    this.data = data;
 
-    return ResponseBody.fromString(
-      jsonEncode(responseData ?? <String, dynamic>{}),
-      200,
-      headers: {
-        Headers.contentTypeHeader: [Headers.jsonContentType],
-      },
+    return Response<T>(
+      requestOptions: RequestOptions(path: path),
+      data: responseData as T?,
     );
   }
 
   @override
-  void close({bool force = false}) {}
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 void main() {
   group('AuthRepository', () {
     test('signIn posts credentials to login and stores token', () async {
-      final adapter = RecordingAdapter()
-        ..responseData = {'token': 'login-token'};
-      final dio = Dio(BaseOptions(baseUrl: 'http://example.com'))
-        ..httpClientAdapter = adapter;
+      final dio = FakeDio()..responseData = {'token': 'login-token'};
       final tokenStorage = FakeTokenStorage();
       final repository = AuthRepository(dio, tokenStorage);
 
       await repository.signIn('user@example.com', 'secret');
 
-      expect(adapter.lastOptions?.path, '/auth/login');
-      expect(adapter.lastOptions?.data, {
-        'email': 'user@example.com',
-        'password': 'secret',
-      });
+      expect(dio.path, '/auth/login');
+      expect(dio.data, {'email': 'user@example.com', 'password': 'secret'});
       expect(tokenStorage.writtenToken, 'login-token');
     });
 
     test('signUp posts credentials to register and stores token', () async {
-      final adapter = RecordingAdapter()
-        ..responseData = {'token': 'register-token'};
-      final dio = Dio(BaseOptions(baseUrl: 'http://example.com'))
-        ..httpClientAdapter = adapter;
+      final dio = FakeDio()..responseData = {'token': 'register-token'};
       final tokenStorage = FakeTokenStorage();
       final repository = AuthRepository(dio, tokenStorage);
 
       await repository.signUp('new@example.com', 'secret');
 
-      expect(adapter.lastOptions?.path, '/auth/register');
-      expect(adapter.lastOptions?.data, {
-        'email': 'new@example.com',
-        'password': 'secret',
-      });
+      expect(dio.path, '/auth/register');
+      expect(dio.data, {'email': 'new@example.com', 'password': 'secret'});
       expect(tokenStorage.writtenToken, 'register-token');
     });
 
     test('throws StateError when token is missing', () async {
-      final adapter = RecordingAdapter()..responseData = {};
-      final dio = Dio(BaseOptions(baseUrl: 'http://example.com'))
-        ..httpClientAdapter = adapter;
+      final dio = FakeDio()..responseData = {};
       final tokenStorage = FakeTokenStorage();
       final repository = AuthRepository(dio, tokenStorage);
 
