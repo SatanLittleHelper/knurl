@@ -1,0 +1,98 @@
+<h2>Состояния Text Field</h2>
+<p class="subtitle">Каждое состояние — реакция на действие пользователя</p>
+
+<style>
+  .showcase { background: #111; border-radius: 12px; padding: 28px; margin-bottom: 16px; display: flex; gap: 28px; align-items: flex-start; }
+  .state-col { display: flex; flex-direction: column; gap: 8px; min-width: 200px; }
+  .state-desc { }
+  .state-desc h3 { color: #fff; font-size: 14px; font-weight: 700; margin: 0 0 4px; }
+  .state-desc p { color: #666; font-size: 13px; margin: 0; line-height: 1.5; }
+  .state-desc .trigger { color: #444; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+
+  .field-wrap { position: relative; }
+  .field-label { position: absolute; top: -9px; left: 10px; padding: 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; background: #111; }
+  .field { width: 100%; box-sizing: border-box; background: #1c1c1c; border-radius: 6px; padding: 12px 14px; font-size: 14px; color: #fff; border: 1.5px solid; }
+  .field-hint { font-size: 11px; margin-top: 5px; padding-left: 2px; }
+
+  .f-empty   { border-color: #2a2a2a; color: #444; }  .fl-empty   { color: #555; }
+  .f-filled  { border-color: #2a2a2a; }               .fl-filled  { color: #666; }
+  .f-focused { border-color: #FF6B35; }               .fl-focused { color: #FF6B35; }
+  .f-error   { border-color: #ef5350; }               .fl-error   { color: #ef5350; }
+  .f-disabled{ border-color: #1e1e1e; opacity: 0.4; } .fl-disabled{ color: #555; }
+</style>
+
+<!-- Empty -->
+<div class="showcase">
+  <div class="state-col">
+    <div class="field-wrap">
+      <span class="field-label fl-empty">Email</span>
+      <div class="field f-empty" style="color:#333">·</div>
+    </div>
+  </div>
+  <div class="state-desc">
+    <div class="trigger">Когда: поле пустое, пользователь не трогал</div>
+    <h3>Empty</h3>
+    <p>Серая граница, серый лейбл. Нейтральное исходное состояние.</p>
+  </div>
+</div>
+
+<!-- Focused -->
+<div class="showcase">
+  <div class="state-col">
+    <div class="field-wrap">
+      <span class="field-label fl-focused">Email</span>
+      <div class="field f-focused" style="caret-color:#FF6B35">user@|</div>
+    </div>
+  </div>
+  <div class="state-desc">
+    <div class="trigger">Когда: пользователь тапнул по полю и печатает</div>
+    <h3>Focused</h3>
+    <p>Граница и лейбл становятся оранжевыми — показывает, что поле активно.</p>
+  </div>
+</div>
+
+<!-- Filled -->
+<div class="showcase">
+  <div class="state-col">
+    <div class="field-wrap">
+      <span class="field-label fl-filled">Email</span>
+      <div class="field f-filled">user@example.com</div>
+    </div>
+  </div>
+  <div class="state-desc">
+    <div class="trigger">Когда: данные введены, поле потеряло фокус</div>
+    <h3>Filled</h3>
+    <p>Серая граница как в Empty, но текст заполнен. Лейбл остаётся сверху.</p>
+  </div>
+</div>
+
+<!-- Error -->
+<div class="showcase">
+  <div class="state-col">
+    <div class="field-wrap">
+      <span class="field-label fl-error">Email</span>
+      <div class="field f-error">неверный-email</div>
+    </div>
+    <div class="field-hint" style="color:#ef5350">Введите корректный email</div>
+  </div>
+  <div class="state-desc">
+    <div class="trigger">Когда: валидация не прошла (после попытки отправки)</div>
+    <h3>Error</h3>
+    <p>Граница и лейбл красные, под полем появляется текст ошибки.</p>
+  </div>
+</div>
+
+<!-- Disabled -->
+<div class="showcase">
+  <div class="state-col">
+    <div class="field-wrap" style="opacity:0.4">
+      <span class="field-label fl-filled">Email</span>
+      <div class="field f-filled" style="cursor:not-allowed">user@example.com</div>
+    </div>
+  </div>
+  <div class="state-desc">
+    <div class="trigger">Когда: поле заблокировано (например, идёт загрузка)</div>
+    <h3>Disabled</h3>
+    <p>Поле полупрозрачное, нельзя нажать. Используется в форме авторизации во время запроса.</p>
+  </div>
+</div>

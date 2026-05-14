@@ -1,0 +1,38 @@
+<h2>Вторичная кнопка — финальный вариант</h2>
+<p class="subtitle">Surface + оранжевый текст</p>
+
+<style>
+  .showcase { background: #111; border-radius: 12px; padding: 28px; margin-bottom: 20px; }
+  .btn { padding: 11px 24px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; letter-spacing: 0.3px; }
+  .primary { background: #FF6B35; color: #fff; }
+  .secondary { background: #1e1e1e; color: #FF6B35; border: 1.5px solid #2a2a2a; }
+  .row { display: flex; gap: 12px; align-items: center; }
+  .sep { width: 1px; height: 36px; background: #222; }
+</style>
+
+<div class="showcase">
+  <div class="row">
+    <button class="btn primary">Начать</button>
+    <button class="btn secondary">Сохранить</button>
+    <div class="sep"></div>
+    <button class="btn primary">Удалить упражнение</button>
+    <button class="btn secondary">Отмена</button>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="yes" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Отлично, принять</h3>
+      <p>Тёмный нейтральный фон + оранжевый текст — идёт в финальный дизайн</p>
+    </div>
+  </div>
+  <div class="option" data-choice="tweak" onclick="toggleSelect(this)">
+    <div class="letter">↩</div>
+    <div class="content">
+      <h3>Ещё подправить</h3>
+      <p>Хочу изменить что-то ещё</p>
+    </div>
+  </div>
+</div>

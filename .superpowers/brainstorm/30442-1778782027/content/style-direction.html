@@ -1,0 +1,84 @@
+<h2>Стилевое направление компонентов</h2>
+<p class="subtitle">Выбери визуальный характер — он определит форму, скругления, цвет, тени</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="material" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f6f0ff;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+      <!-- Button -->
+      <div style="background:#6750A4;color:#fff;padding:10px 24px;border-radius:100px;font-size:14px;font-weight:500;letter-spacing:0.1px">Начать тренировку</div>
+      <!-- Chip -->
+      <div style="display:flex;gap:8px">
+        <div style="border:1.5px solid #6750A4;color:#6750A4;border-radius:100px;padding:6px 16px;font-size:13px">Грудь</div>
+        <div style="border:1.5px solid #999;color:#555;border-radius:100px;padding:6px 16px;font-size:13px">Спина</div>
+      </div>
+      <!-- Text field -->
+      <div style="border:1.5px solid #6750A4;border-radius:4px;padding:12px 14px;font-size:14px;color:#333;width:180px;position:relative">
+        <span style="position:absolute;top:-9px;left:10px;background:#f6f0ff;padding:0 4px;font-size:12px;color:#6750A4">Email</span>
+        user@example.com
+      </div>
+      <!-- Avatar + badge -->
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:#6750A4;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">АФ</div>
+        <div style="background:#6750A4;color:#fff;border-radius:100px;font-size:11px;padding:2px 8px">3</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Material 3 (стандарт)</h3>
+      <p>Большие скругления, фиолетовая палитра по умолчанию. Минимум кастомизации — быстро и консистентно с Flutter.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="athletic" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f0f0f;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+      <!-- Button -->
+      <div style="background:#c8f135;color:#0f0f0f;padding:10px 24px;border-radius:6px;font-size:14px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase">НАЧАТЬ</div>
+      <!-- Chips -->
+      <div style="display:flex;gap:8px">
+        <div style="background:#c8f135;color:#0f0f0f;border-radius:4px;padding:5px 14px;font-size:12px;font-weight:700">ГРУДЬ</div>
+        <div style="border:1.5px solid #444;color:#aaa;border-radius:4px;padding:5px 14px;font-size:12px;font-weight:600">СПИНА</div>
+      </div>
+      <!-- Text field -->
+      <div style="border:1.5px solid #c8f135;border-radius:6px;padding:12px 14px;font-size:14px;color:#fff;width:180px;position:relative;background:#1a1a1a">
+        <span style="position:absolute;top:-9px;left:10px;background:#1a1a1a;padding:0 4px;font-size:11px;color:#c8f135;font-weight:700">EMAIL</span>
+        user@example.com
+      </div>
+      <!-- Avatar + badge -->
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:6px;background:#c8f135;color:#0f0f0f;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800">АФ</div>
+        <div style="background:#c8f135;color:#0f0f0f;border-radius:4px;font-size:11px;font-weight:700;padding:2px 8px">3</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Athletic / Dark</h3>
+      <p>Тёмный фон, кислотный акцент, прямые углы и жирный шрифт. Подходит для фитнес-приложений с энергичным характером.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="minimal" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#fafafa;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+      <!-- Button -->
+      <div style="background:#111;color:#fff;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:500">Начать тренировку</div>
+      <!-- Chips -->
+      <div style="display:flex;gap:8px">
+        <div style="background:#111;color:#fff;border-radius:8px;padding:6px 16px;font-size:13px">Грудь</div>
+        <div style="border:1.5px solid #ddd;color:#555;border-radius:8px;padding:6px 16px;font-size:13px">Спина</div>
+      </div>
+      <!-- Text field -->
+      <div style="border:1.5px solid #ddd;border-radius:8px;padding:12px 14px;font-size:14px;color:#333;width:180px;position:relative;background:#fff">
+        <span style="position:absolute;top:-9px;left:10px;background:#fafafa;padding:0 4px;font-size:12px;color:#666">Email</span>
+        user@example.com
+      </div>
+      <!-- Avatar + badge -->
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:8px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">АФ</div>
+        <div style="background:#111;color:#fff;border-radius:100px;font-size:11px;padding:2px 8px">3</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Minimal / Monochrome</h3>
+      <p>Чёрно-белая палитра, умеренные скругления. Чистый, нейтральный стиль — акцентный цвет можно добавить позже.</p>
+    </div>
+  </div>
+
+</div>

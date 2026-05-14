@@ -1,0 +1,168 @@
+<h2>Дизайн компонентов — обзор</h2>
+<p class="subtitle">Athletic / Dark · Акцент #FF6B35 · скругление 6px</p>
+
+<style>
+  .showcase { background: #111; border-radius: 12px; padding: 28px; margin-bottom: 24px; }
+  .showcase h3 { color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 16px; opacity: 0.5; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 12px; }
+
+  /* Buttons */
+  .btn { padding: 11px 24px; border-radius: 6px; font-size: 14px; font-weight: 700; letter-spacing: 0.3px; cursor: pointer; border: none; }
+  .btn-primary { background: #FF6B35; color: #fff; }
+  .btn-secondary { background: transparent; color: #FF6B35; border: 1.5px solid #FF6B35; }
+  .btn-ghost { background: transparent; color: #ccc; }
+  .btn-destructive { background: #c62828; color: #fff; }
+  .btn-disabled { background: #2a2a2a; color: #555; }
+  .btn-sm { padding: 7px 16px; font-size: 12px; }
+  .btn-loading { display: flex; align-items: center; gap: 8px; }
+  .spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Text fields */
+  .field-wrap { position: relative; width: 200px; }
+  .field-label { position: absolute; top: -9px; left: 10px; padding: 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .field { width: 100%; box-sizing: border-box; background: #1c1c1c; border-radius: 6px; padding: 12px 14px; font-size: 14px; color: #fff; border: 1.5px solid #333; }
+  .field-focused { border-color: #FF6B35; }
+  .field-error-border { border-color: #ef5350; }
+  .field-label-normal { background: #111; color: #888; }
+  .field-label-focused { background: #111; color: #FF6B35; }
+  .field-label-error { background: #111; color: #ef5350; }
+  .field-hint { font-size: 11px; margin-top: 4px; padding-left: 2px; }
+  .field-icon-wrap { position: relative; }
+  .field-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #555; font-size: 16px; }
+
+  /* Chips */
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .chip-active { background: #FF6B35; color: #fff; }
+  .chip-inactive { background: #1e1e1e; color: #888; border: 1.5px solid #2a2a2a; }
+
+  /* Badge */
+  .badge-wrap { position: relative; display: inline-flex; }
+  .badge { position: absolute; top: -6px; right: -8px; background: #FF6B35; color: #fff; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+  .icon-box { width: 36px; height: 36px; background: #1e1e1e; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 18px; }
+
+  /* Spinner */
+  .spinner-lg { width: 32px; height: 32px; border: 3px solid #2a2a2a; border-top-color: #FF6B35; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .spinner-sm { width: 16px; height: 16px; border: 2px solid #2a2a2a; border-top-color: #FF6B35; border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+  /* Avatar */
+  .avatar { display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; border-radius: 6px; }
+  .avatar-sm { width: 28px; height: 28px; font-size: 11px; background: #FF6B35; }
+  .avatar-md { width: 40px; height: 40px; font-size: 15px; background: #FF6B35; }
+  .avatar-lg { width: 56px; height: 56px; font-size: 20px; background: #FF6B35; }
+  .avatar-img { background: #2a2a2a; overflow: hidden; }
+
+  /* Status Tag */
+  .tag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .tag::before { content: '●'; font-size: 8px; }
+  .tag-active { background: rgba(76,175,80,0.15); color: #66bb6a; }
+  .tag-rest { background: rgba(255,107,53,0.15); color: #FF6B35; }
+  .tag-warning { background: rgba(255,193,7,0.15); color: #ffc107; }
+  .tag-done { background: rgba(100,100,100,0.15); color: #777; }
+  .tag-pr { background: rgba(171,71,188,0.15); color: #ce93d8; }
+</style>
+
+<!-- BUTTONS -->
+<div class="showcase">
+  <h3>Button</h3>
+  <div class="row">
+    <button class="btn btn-primary">Начать</button>
+    <button class="btn btn-secondary">Сохранить</button>
+    <button class="btn btn-ghost">Отмена</button>
+    <button class="btn btn-destructive">Удалить</button>
+  </div>
+  <div class="row">
+    <button class="btn btn-primary btn-sm">Small</button>
+    <button class="btn btn-primary btn-loading"><div class="spin"></div> Загрузка...</button>
+    <button class="btn btn-disabled">Недоступно</button>
+  </div>
+</div>
+
+<!-- TEXT FIELDS -->
+<div class="showcase">
+  <h3>Text Field</h3>
+  <div class="row" style="align-items:flex-start">
+    <div class="field-wrap">
+      <span class="field-label field-label-normal">Email</span>
+      <div class="field">user@example.com</div>
+    </div>
+    <div class="field-wrap">
+      <span class="field-label field-label-focused">Пароль</span>
+      <div class="field field-focused">••••••••</div>
+    </div>
+    <div class="field-wrap">
+      <span class="field-label field-label-error">Email</span>
+      <div class="field field-error-border">неверный</div>
+      <div class="field-hint" style="color:#ef5350">Введите корректный email</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHIPS -->
+<div class="showcase">
+  <h3>Chip</h3>
+  <div class="row">
+    <div class="chip chip-active">Грудь</div>
+    <div class="chip chip-active">⚡ Кардио</div>
+    <div class="chip chip-inactive">Спина</div>
+    <div class="chip chip-inactive">Ноги</div>
+    <div class="chip chip-inactive">Пресс</div>
+  </div>
+</div>
+
+<!-- BADGE -->
+<div class="showcase">
+  <h3>Badge</h3>
+  <div class="row">
+    <div class="badge-wrap">
+      <div class="icon-box">🔔</div>
+      <div class="badge">3</div>
+    </div>
+    <div class="badge-wrap">
+      <div class="icon-box">💬</div>
+      <div class="badge">12</div>
+    </div>
+    <div class="badge-wrap">
+      <div class="icon-box">📋</div>
+      <div class="badge">99+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SPINNER -->
+<div class="showcase">
+  <h3>Spinner / Loader</h3>
+  <div class="row" style="align-items:center">
+    <div class="spinner-sm"></div>
+    <span style="color:#888;font-size:13px">inline</span>
+    <div style="width:1px;height:20px;background:#333"></div>
+    <div class="spinner-lg"></div>
+    <span style="color:#888;font-size:13px">page-level</span>
+  </div>
+</div>
+
+<!-- AVATAR -->
+<div class="showcase">
+  <h3>Avatar</h3>
+  <div class="row" style="align-items:center">
+    <div class="avatar avatar-sm">АФ</div>
+    <div class="avatar avatar-md">АФ</div>
+    <div class="avatar avatar-lg">АФ</div>
+    <div style="color:#555;font-size:12px">↑ initials</div>
+    <div class="avatar avatar-md avatar-img" style="background:#2a2a2a">
+      <span style="color:#555;font-size:10px">фото</span>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS TAG -->
+<div class="showcase">
+  <h3>Status Tag</h3>
+  <div class="row">
+    <div class="tag tag-active">Active</div>
+    <div class="tag tag-rest">Rest</div>
+    <div class="tag tag-warning">Warning</div>
+    <div class="tag tag-done">Done</div>
+    <div class="tag tag-pr">PR</div>
+  </div>
+</div>

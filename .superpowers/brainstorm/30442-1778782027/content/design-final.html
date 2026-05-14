@@ -1,0 +1,136 @@
+<h2>Финальный дизайн компонентов</h2>
+<p class="subtitle">Athletic / Dark · #FF6B35 · border-radius 6px</p>
+
+<style>
+  .showcase { background: #111; border-radius: 12px; padding: 28px; margin-bottom: 20px; }
+  .showcase-label { color: #555; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 16px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 10px; }
+
+  .btn { padding: 11px 24px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; letter-spacing: 0.3px; }
+  .btn-primary   { background: #FF6B35; color: #fff; }
+  .btn-secondary { background: #1e1e1e; color: #FF6B35; border: 1.5px solid #2a2a2a; }
+  .btn-ghost     { background: transparent; color: #bbb; border: none; }
+  .btn-destroy   { background: #c62828; color: #fff; }
+  .btn-disabled  { background: #1e1e1e; color: #444; border: 1.5px solid #1e1e1e; cursor: default; }
+  .btn-sm        { padding: 7px 16px; font-size: 12px; }
+  .btn-loading   { display: flex; align-items: center; gap: 8px; }
+  .spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: s 0.8s linear infinite; }
+  @keyframes s { to { transform: rotate(360deg); } }
+
+  .field-wrap { position: relative; width: 190px; }
+  .field-label { position: absolute; top: -9px; left: 10px; padding: 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; background: #111; }
+  .field { width: 100%; box-sizing: border-box; background: #1c1c1c; border-radius: 6px; padding: 12px 14px; font-size: 14px; color: #fff; border: 1.5px solid; }
+  .f-normal  { border-color: #2a2a2a; }  .fl-normal  { color: #666; }
+  .f-focused { border-color: #FF6B35; }  .fl-focused { color: #FF6B35; }
+  .f-error   { border-color: #ef5350; }  .fl-error   { color: #ef5350; }
+  .field-hint { font-size: 11px; margin-top: 4px; padding-left: 2px; color: #ef5350; }
+
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .chip-on  { background: #FF6B35; color: #fff; }
+  .chip-off { background: #1e1e1e; color: #777; border: 1.5px solid #2a2a2a; }
+
+  .badge-wrap { position: relative; display: inline-flex; }
+  .badge { position: absolute; top: -6px; right: -8px; background: #FF6B35; color: #fff; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+  .icon-box { width: 36px; height: 36px; background: #1e1e1e; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 18px; }
+
+  .sp-lg { width: 32px; height: 32px; border: 3px solid #2a2a2a; border-top-color: #FF6B35; border-radius: 50%; animation: s 0.8s linear infinite; }
+  .sp-sm { width: 16px; height: 16px; border: 2px solid #2a2a2a; border-top-color: #FF6B35; border-radius: 50%; animation: s 0.8s linear infinite; }
+
+  .av { display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; border-radius: 6px; background: #FF6B35; }
+  .av-sm { width: 28px; height: 28px; font-size: 11px; }
+  .av-md { width: 40px; height: 40px; font-size: 15px; }
+  .av-lg { width: 56px; height: 56px; font-size: 20px; }
+
+  .tag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .tag::before { content:'●'; font-size: 8px; }
+  .t-active  { background: rgba(76,175,80,0.15);   color: #66bb6a; }
+  .t-rest    { background: rgba(255,107,53,0.15);   color: #FF6B35; }
+  .t-warn    { background: rgba(255,193,7,0.15);    color: #ffc107; }
+  .t-done    { background: rgba(100,100,100,0.15);  color: #777; }
+  .t-pr      { background: rgba(171,71,188,0.15);   color: #ce93d8; }
+</style>
+
+<div class="showcase">
+  <div class="showcase-label">Button</div>
+  <div class="row">
+    <button class="btn btn-primary">Начать</button>
+    <button class="btn btn-secondary">Сохранить</button>
+    <button class="btn btn-ghost">Отмена</button>
+    <button class="btn btn-destroy">Удалить</button>
+  </div>
+  <div class="row">
+    <button class="btn btn-primary btn-sm">Маленькая</button>
+    <button class="btn btn-primary btn-loading"><div class="spin"></div>Загрузка...</button>
+    <button class="btn btn-disabled">Недоступно</button>
+  </div>
+</div>
+
+<div class="showcase">
+  <div class="showcase-label">Text Field</div>
+  <div class="row" style="align-items:flex-start">
+    <div class="field-wrap">
+      <span class="field-label fl-normal">Email</span>
+      <div class="field f-normal">user@example.com</div>
+    </div>
+    <div class="field-wrap">
+      <span class="field-label fl-focused">Пароль</span>
+      <div class="field f-focused">••••••••</div>
+    </div>
+    <div class="field-wrap">
+      <span class="field-label fl-error">Email</span>
+      <div class="field f-error">неверный</div>
+      <div class="field-hint">Введите корректный email</div>
+    </div>
+  </div>
+</div>
+
+<div class="showcase">
+  <div class="showcase-label">Chip</div>
+  <div class="row">
+    <div class="chip chip-on">Грудь</div>
+    <div class="chip chip-on">⚡ Кардио</div>
+    <div class="chip chip-off">Спина</div>
+    <div class="chip chip-off">Ноги</div>
+  </div>
+</div>
+
+<div class="showcase">
+  <div class="showcase-label">Badge</div>
+  <div class="row">
+    <div class="badge-wrap"><div class="icon-box">🔔</div><div class="badge">3</div></div>
+    <div class="badge-wrap"><div class="icon-box">💬</div><div class="badge">12</div></div>
+    <div class="badge-wrap"><div class="icon-box">📋</div><div class="badge">99+</div></div>
+  </div>
+</div>
+
+<div class="showcase">
+  <div class="showcase-label">Spinner</div>
+  <div class="row">
+    <div class="sp-sm"></div>
+    <span style="color:#555;font-size:12px">inline</span>
+    <div style="width:1px;height:20px;background:#222"></div>
+    <div class="sp-lg"></div>
+    <span style="color:#555;font-size:12px">page-level</span>
+  </div>
+</div>
+
+<div class="showcase">
+  <div class="showcase-label">Avatar</div>
+  <div class="row" style="align-items:center">
+    <div class="av av-sm">АФ</div>
+    <div class="av av-md">АФ</div>
+    <div class="av av-lg">АФ</div>
+    <div style="color:#444;font-size:12px;margin-left:4px">sm · md · lg</div>
+  </div>
+</div>
+
+<div class="showcase">
+  <div class="showcase-label">Status Tag</div>
+  <div class="row">
+    <div class="tag t-active">Active</div>
+    <div class="tag t-rest">Rest</div>
+    <div class="tag t-warn">Warning</div>
+    <div class="tag t-done">Done</div>
+    <div class="tag t-pr">PR</div>
+  </div>
+</div>

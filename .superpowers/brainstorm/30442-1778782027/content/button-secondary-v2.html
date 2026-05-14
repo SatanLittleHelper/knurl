@@ -1,0 +1,70 @@
+<h2>Вторичная кнопка — варианты</h2>
+<p class="subtitle">Рядом с Primary для сравнения</p>
+
+<style>
+  .showcase { background: #111; border-radius: 12px; padding: 28px; margin-bottom: 20px; }
+  .label { color: #555; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  .row { display: flex; gap: 12px; align-items: center; }
+  .btn { padding: 11px 24px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; letter-spacing: 0.3px; }
+  .primary { background: #FF6B35; color: #fff; }
+</style>
+
+<div class="options">
+
+  <div class="option" data-choice="outlined" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Outlined (текущий)</h3>
+      <div class="showcase">
+        <div class="row">
+          <button class="btn primary">Начать</button>
+          <button class="btn" style="background:transparent;color:#FF6B35;border:1.5px solid #FF6B35">Сохранить</button>
+        </div>
+      </div>
+      <p>Граница цвета акцента — кнопки конкурируют друг с другом по весу</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="tonal" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Tonal (приглушённый фон)</h3>
+      <div class="showcase">
+        <div class="row">
+          <button class="btn primary">Начать</button>
+          <button class="btn" style="background:rgba(255,107,53,0.15);color:#FF6B35;border:none">Сохранить</button>
+        </div>
+      </div>
+      <p>Полупрозрачный акцентный фон — мягче, меньше конкурирует с primary</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="surface" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Surface (нейтральный)</h3>
+      <div class="showcase">
+        <div class="row">
+          <button class="btn primary">Начать</button>
+          <button class="btn" style="background:#1e1e1e;color:#ccc;border:1.5px solid #2a2a2a">Сохранить</button>
+        </div>
+      </div>
+      <p>Тёмный нейтральный фон — явная иерархия, secondary явно слабее</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="ghost" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Ghost (только текст)</h3>
+      <div class="showcase">
+        <div class="row">
+          <button class="btn primary">Начать</button>
+          <button class="btn" style="background:transparent;color:#ccc;border:none">Сохранить</button>
+        </div>
+      </div>
+      <p>Без фона и рамки — максимальная иерархия, secondary почти не заметна</p>
+    </div>
+  </div>
+
+</div>
