@@ -8,7 +8,7 @@
 ### Инфраструктура
 1. [x] **Проект Flutter** — инициализация, структура папок, зависимости (drift, dio, riverpod/bloc, go_router)
 2. [x] **Локальная БД (SQLite/drift)** — схема таблиц (Exercise, WorkoutPlan, WorkoutDay, WorkoutSession, SetLog), миграции
-3. [ ] **API-клиент** — HTTP-клиент для Go-бэкенда, обработка ошибок, interceptors для JWT
+3. [x] **API-клиент** — HTTP-клиент для Go-бэкенда, обработка ошибок, interceptors для JWT
 
 ### Экраны
 4. [ ] **Auth** — регистрация и вход (email + пароль), хранение и обновление JWT
