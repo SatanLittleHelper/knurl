@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/knurl_theme.dart';
 
 enum KnurlTagStatus { active, rest, warning, done, pr }
 
@@ -21,12 +22,13 @@ class KnurlStatusTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = KnurlTheme.of(context);
     final (bg, fg, label) = _resolve();
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
       decoration: BoxDecoration(
         color: bg.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: theme.radius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

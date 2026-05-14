@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:knurl/features/auth/presentation/auth_controller.dart';
 import 'package:knurl/shared/utils/validators.dart';
 import 'package:knurl/shared/widgets/knurl_app_bar.dart';
+import 'package:knurl/shared/theme/knurl_theme.dart';
 import 'package:knurl/shared/widgets/knurl_button.dart';
 import 'package:knurl/shared/widgets/knurl_text_field.dart';
 
@@ -83,7 +84,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                     Text(
                       state.errorMessage!,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
+                        color: KnurlTheme.of(context).error,
                       ),
                     ),
                     const SizedBox(height: 12),

@@ -24,7 +24,7 @@ class KnurlButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = KnurlTheme.of(context);
-    final disabled = onPressed == null && !isLoading;
+    final disabled = onPressed == null;
     final (bg, fg, border) = _colors(theme, disabled, variant);
     final (vPad, hPad, fontSize) = _dims(size);
 
