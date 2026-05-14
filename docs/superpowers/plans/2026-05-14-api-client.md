@@ -49,13 +49,6 @@ class ApiException implements Exception {
 }
 ```
 
-- [ ] **Шаг 2: Закоммитить**
-
-```bash
-git add mobile/lib/shared/network/api_exception.dart
-git commit -m "feat: ApiException и ApiErrorCode для сетевых ошибок"
-```
-
 ---
 
 ## Task 2: TokenStorage
@@ -98,13 +91,6 @@ final tokenStorageProvider = Provider<TokenStorage>(
 );
 ```
 
-- [ ] **Шаг 2: Закоммитить**
-
-```bash
-git add mobile/lib/shared/network/token_storage.dart
-git commit -m "feat: TokenStorage — JWT в flutter_secure_storage"
-```
-
 ---
 
 ## Task 3: AuthInterceptor — тест
@@ -112,7 +98,7 @@ git commit -m "feat: TokenStorage — JWT в flutter_secure_storage"
 **Files:**
 - Create: `mobile/test/shared/network/auth_interceptor_test.dart`
 
-- [ ] **Шаг 1: Написать падающий тест**
+- [ ] **Шаг 1: Написать тест**
 
 ```dart
 // mobile/test/shared/network/auth_interceptor_test.dart
@@ -159,23 +145,6 @@ void main() {
       expect(options.headers.containsKey('Authorization'), isFalse);
     });
 
-    test('DioException 401 → ApiException(unauthorized)', () async {
-      final interceptor = AuthInterceptor(FakeTokenStorage(null));
-      final dioError = DioException(
-        requestOptions: RequestOptions(path: '/test'),
-        response: Response(
-          requestOptions: RequestOptions(path: '/test'),
-          statusCode: 401,
-        ),
-        type: DioExceptionType.badResponse,
-      );
-      final handler = ErrorInterceptorHandler();
-
-      interceptor.onError(dioError, handler);
-
-      // handler.next не вызван — вместо него брошено исключение
-    });
-
     test('DioException 404 → ApiException(notFound)', () {
       final interceptor = AuthInterceptor(FakeTokenStorage(null));
       final dioError = DioException(
@@ -191,6 +160,25 @@ void main() {
         () => interceptor.onError(dioError, ErrorInterceptorHandler()),
         throwsA(
           isA<ApiException>().having((e) => e.code, 'code', ApiErrorCode.notFound),
+        ),
+      );
+    });
+
+    test('DioException 401 → ApiException(unauthorized)', () {
+      final interceptor = AuthInterceptor(FakeTokenStorage(null));
+      final dioError = DioException(
+        requestOptions: RequestOptions(path: '/test'),
+        response: Response(
+          requestOptions: RequestOptions(path: '/test'),
+          statusCode: 401,
+        ),
+        type: DioExceptionType.badResponse,
+      );
+
+      expect(
+        () => interceptor.onError(dioError, ErrorInterceptorHandler()),
+        throwsA(
+          isA<ApiException>().having((e) => e.code, 'code', ApiErrorCode.unauthorized),
         ),
       );
     });
@@ -231,14 +219,6 @@ void main() {
   });
 }
 ```
-
-- [ ] **Шаг 2: Убедиться что тесты падают**
-
-```bash
-cd mobile && flutter test test/shared/network/auth_interceptor_test.dart
-```
-
-Ожидается: ошибка компиляции — `AuthInterceptor` не существует.
 
 ---
 
@@ -328,21 +308,15 @@ cd mobile && flutter test test/shared/network/auth_interceptor_test.dart
 
 Ожидается: все тесты зелёные.
 
-- [ ] **Шаг 3: Закоммитить**
-
-```bash
-git add mobile/lib/shared/network/auth_interceptor.dart mobile/test/shared/network/auth_interceptor_test.dart
-git commit -m "feat: AuthInterceptor — JWT заголовок и маппинг DioException → ApiException"
-```
-
 ---
 
-## Task 5: Обновить dioProvider
+## Task 5: Обновить dioProvider и .env
 
 **Files:**
 - Modify: `mobile/lib/shared/network/api_client.dart`
+- Modify: `mobile/.env.example.json`
 
-- [ ] **Шаг 1: Обновить файл**
+- [ ] **Шаг 1: Обновить api_client.dart**
 
 ```dart
 // mobile/lib/shared/network/api_client.dart
@@ -369,7 +343,25 @@ final dioProvider = Provider<Dio>((ref) {
 });
 ```
 
-- [ ] **Шаг 2: Запустить все тесты**
+- [ ] **Шаг 2: Обновить .env.example.json**
+
+`API_URL` для Android-эмулятора должен быть `http://10.0.2.2:8080` (localhost недоступен изнутри эмулятора). Обновить `.env.example.json`:
+
+```json
+{
+  "API_URL": "http://10.0.2.2:8080"
+}
+```
+
+И `.env.json` (локальный, не коммитится):
+
+```json
+{
+  "API_URL": "http://10.0.2.2:8080"
+}
+```
+
+- [ ] **Шаг 3: Запустить все тесты**
 
 ```bash
 cd mobile && flutter test
@@ -377,9 +369,9 @@ cd mobile && flutter test
 
 Ожидается: все тесты зелёные.
 
-- [ ] **Шаг 3: Закоммитить**
+- [ ] **Шаг 4: Закоммитить всё**
 
 ```bash
-git add mobile/lib/shared/network/api_client.dart
-git commit -m "feat: подключить AuthInterceptor к dioProvider"
+git add mobile/lib/shared/network/ mobile/test/shared/network/ mobile/.env.example.json
+git commit -m "feat: API-клиент — TokenStorage, AuthInterceptor, ApiException"
 ```
