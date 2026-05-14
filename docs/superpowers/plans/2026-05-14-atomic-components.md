@@ -21,6 +21,7 @@
 - `mobile/lib/shared/widgets/knurl_spinner.dart` — `KnurlSpinner`, `KnurlSpinnerSize`
 - `mobile/lib/shared/widgets/knurl_avatar.dart` — `KnurlAvatar`, `KnurlAvatarSize`
 - `mobile/lib/shared/widgets/knurl_status_tag.dart` — `KnurlStatusTag`, `KnurlTagStatus`
+- `mobile/test/shared/widgets/knurl_theme_test.dart`
 - `mobile/test/shared/widgets/knurl_button_test.dart`
 - `mobile/test/shared/widgets/knurl_text_field_test.dart`
 - `mobile/test/shared/widgets/knurl_chip_test.dart`
@@ -42,64 +43,7 @@
 - Modify: `mobile/lib/shared/theme/app_theme.dart`
 - Test: `mobile/test/shared/widgets/knurl_theme_test.dart`
 
-- [ ] **Step 1: Написать тест**
-
-Создай `mobile/test/shared/widgets/knurl_theme_test.dart`:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:knurl/shared/theme/app_theme.dart';
-import 'package:knurl/shared/theme/knurl_theme.dart';
-
-void main() {
-  group('KnurlTheme', () {
-    testWidgets('of() returns accent from theme extension', (tester) async {
-      late KnurlTheme captured;
-      await tester.pumpWidget(MaterialApp(
-        theme: appTheme,
-        home: Builder(builder: (context) {
-          captured = KnurlTheme.of(context);
-          return const SizedBox();
-        }),
-      ));
-      expect(captured.accent, const Color(0xFFFF6B35));
-    });
-
-    testWidgets('of() returns surface from theme extension', (tester) async {
-      late KnurlTheme captured;
-      await tester.pumpWidget(MaterialApp(
-        theme: appTheme,
-        home: Builder(builder: (context) {
-          captured = KnurlTheme.of(context);
-          return const SizedBox();
-        }),
-      ));
-      expect(captured.surface, const Color(0xFF1E1E1E));
-    });
-
-    testWidgets('of() falls back to defaults when extension is absent', (tester) async {
-      late KnurlTheme captured;
-      await tester.pumpWidget(MaterialApp(
-        home: Builder(builder: (context) {
-          captured = KnurlTheme.of(context);
-          return const SizedBox();
-        }),
-      ));
-      expect(captured.accent, const Color(0xFFFF6B35));
-    });
-  });
-}
-```
-
-- [ ] **Step 2: Запустить тест — ожидаем ошибку компиляции**
-
-```bash
-cd mobile && flutter test test/shared/widgets/knurl_theme_test.dart
-```
-Ожидаем: `Error: uri 'package:knurl/shared/theme/knurl_theme.dart' not found`
-
-- [ ] **Step 3: Создать `mobile/lib/shared/theme/knurl_theme.dart`**
+- [ ] **Step 1: Создать `mobile/lib/shared/theme/knurl_theme.dart`**
 
 ```dart
 import 'package:flutter/material.dart';
@@ -166,7 +110,7 @@ class KnurlTheme extends ThemeExtension<KnurlTheme> {
 }
 ```
 
-- [ ] **Step 4: Обновить `mobile/lib/shared/theme/app_theme.dart`**
+- [ ] **Step 2: Обновить `mobile/lib/shared/theme/app_theme.dart`**
 
 ```dart
 import 'package:flutter/material.dart';
@@ -183,25 +127,60 @@ final appTheme = ThemeData(
 );
 ```
 
-- [ ] **Step 5: Запустить тест — ожидаем PASS**
+- [ ] **Step 3: Написать тест `mobile/test/shared/widgets/knurl_theme_test.dart`**
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:knurl/shared/theme/app_theme.dart';
+import 'package:knurl/shared/theme/knurl_theme.dart';
+
+void main() {
+  group('KnurlTheme', () {
+    testWidgets('of() returns accent from theme extension', (tester) async {
+      late KnurlTheme captured;
+      await tester.pumpWidget(MaterialApp(
+        theme: appTheme,
+        home: Builder(builder: (context) {
+          captured = KnurlTheme.of(context);
+          return const SizedBox();
+        }),
+      ));
+      expect(captured.accent, const Color(0xFFFF6B35));
+    });
+
+    testWidgets('of() returns surface from theme extension', (tester) async {
+      late KnurlTheme captured;
+      await tester.pumpWidget(MaterialApp(
+        theme: appTheme,
+        home: Builder(builder: (context) {
+          captured = KnurlTheme.of(context);
+          return const SizedBox();
+        }),
+      ));
+      expect(captured.surface, const Color(0xFF1E1E1E));
+    });
+
+    testWidgets('of() falls back to defaults when extension is absent', (tester) async {
+      late KnurlTheme captured;
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(builder: (context) {
+          captured = KnurlTheme.of(context);
+          return const SizedBox();
+        }),
+      ));
+      expect(captured.accent, const Color(0xFFFF6B35));
+    });
+  });
+}
+```
+
+- [ ] **Step 4: Запустить тест**
 
 ```bash
 cd mobile && flutter test test/shared/widgets/knurl_theme_test.dart
 ```
 Ожидаем: `All tests passed!`
-
-- [ ] **Step 6: Запустить все тесты — убедиться, что ничего не сломали**
-
-```bash
-cd mobile && flutter test
-```
-Ожидаем: все тесты проходят.
-
-- [ ] **Step 7: Коммит**
-
-```bash
-git add . && git commit -m "feat: добавить KnurlTheme extension и обновить тёмную тему"
-```
 
 ---
 
@@ -211,96 +190,7 @@ git add . && git commit -m "feat: добавить KnurlTheme extension и об�
 - Create: `mobile/lib/shared/widgets/knurl_button.dart`
 - Test: `mobile/test/shared/widgets/knurl_button_test.dart`
 
-- [ ] **Step 1: Написать тест**
-
-Создай `mobile/test/shared/widgets/knurl_button_test.dart`:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:knurl/shared/theme/app_theme.dart';
-import 'package:knurl/shared/widgets/knurl_button.dart';
-
-Widget wrap(Widget child) => MaterialApp(
-      theme: appTheme,
-      home: Scaffold(body: Center(child: child)),
-    );
-
-void main() {
-  group('KnurlButton', () {
-    testWidgets('renders label', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlButton(label: 'Начать', onPressed: () {}),
-      ));
-      expect(find.text('Начать'), findsOneWidget);
-    });
-
-    testWidgets('calls onPressed when tapped', (tester) async {
-      var tapped = false;
-      await tester.pumpWidget(wrap(
-        KnurlButton(label: 'Tap', onPressed: () => tapped = true),
-      ));
-      await tester.tap(find.byType(KnurlButton));
-      expect(tapped, isTrue);
-    });
-
-    testWidgets('does not call onPressed when onPressed is null', (tester) async {
-      var tapped = false;
-      await tester.pumpWidget(wrap(
-        KnurlButton(label: 'Tap', onPressed: null),
-      ));
-      await tester.tap(find.byType(KnurlButton), warnIfMissed: false);
-      expect(tapped, isFalse);
-    });
-
-    testWidgets('shows CircularProgressIndicator when isLoading', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlButton(label: 'Tap', onPressed: () {}, isLoading: true),
-      ));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      expect(find.text('Tap'), findsNothing);
-    });
-
-    testWidgets('does not call onPressed when isLoading', (tester) async {
-      var tapped = false;
-      await tester.pumpWidget(wrap(
-        KnurlButton(label: 'Tap', onPressed: () => tapped = true, isLoading: true),
-      ));
-      await tester.tap(find.byType(KnurlButton), warnIfMissed: false);
-      expect(tapped, isFalse);
-    });
-
-    testWidgets('all variants render without error', (tester) async {
-      for (final v in KnurlButtonVariant.values) {
-        await tester.pumpWidget(wrap(
-          KnurlButton(label: 'Test', onPressed: () {}, variant: v),
-        ));
-        expect(find.text('Test'), findsOneWidget);
-      }
-    });
-
-    testWidgets('sm size renders without error', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlButton(
-          label: 'Small',
-          onPressed: () {},
-          size: KnurlButtonSize.sm,
-        ),
-      ));
-      expect(find.text('Small'), findsOneWidget);
-    });
-  });
-}
-```
-
-- [ ] **Step 2: Запустить тест — ожидаем ошибку компиляции**
-
-```bash
-cd mobile && flutter test test/shared/widgets/knurl_button_test.dart
-```
-Ожидаем: `Error: uri 'package:knurl/shared/widgets/knurl_button.dart' not found`
-
-- [ ] **Step 3: Создать `mobile/lib/shared/widgets/knurl_button.dart`**
+- [ ] **Step 1: Создать `mobile/lib/shared/widgets/knurl_button.dart`**
 
 ```dart
 import 'package:flutter/material.dart';
@@ -384,18 +274,88 @@ class KnurlButton extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 4: Запустить тест — ожидаем PASS**
+- [ ] **Step 2: Написать тест `mobile/test/shared/widgets/knurl_button_test.dart`**
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:knurl/shared/theme/app_theme.dart';
+import 'package:knurl/shared/widgets/knurl_button.dart';
+
+Widget wrap(Widget child) => MaterialApp(
+      theme: appTheme,
+      home: Scaffold(body: Center(child: child)),
+    );
+
+void main() {
+  group('KnurlButton', () {
+    testWidgets('renders label', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlButton(label: 'Начать', onPressed: () {}),
+      ));
+      expect(find.text('Начать'), findsOneWidget);
+    });
+
+    testWidgets('calls onPressed when tapped', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(wrap(
+        KnurlButton(label: 'Tap', onPressed: () => tapped = true),
+      ));
+      await tester.tap(find.byType(KnurlButton));
+      expect(tapped, isTrue);
+    });
+
+    testWidgets('does not call onPressed when onPressed is null', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(wrap(
+        KnurlButton(label: 'Tap', onPressed: null),
+      ));
+      await tester.tap(find.byType(KnurlButton), warnIfMissed: false);
+      expect(tapped, isFalse);
+    });
+
+    testWidgets('shows CircularProgressIndicator when isLoading', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlButton(label: 'Tap', onPressed: () {}, isLoading: true),
+      ));
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.text('Tap'), findsNothing);
+    });
+
+    testWidgets('does not call onPressed when isLoading', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(wrap(
+        KnurlButton(label: 'Tap', onPressed: () => tapped = true, isLoading: true),
+      ));
+      await tester.tap(find.byType(KnurlButton), warnIfMissed: false);
+      expect(tapped, isFalse);
+    });
+
+    testWidgets('all variants render without error', (tester) async {
+      for (final v in KnurlButtonVariant.values) {
+        await tester.pumpWidget(wrap(
+          KnurlButton(label: 'Test', onPressed: () {}, variant: v),
+        ));
+        expect(find.text('Test'), findsOneWidget);
+      }
+    });
+
+    testWidgets('sm size renders without error', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlButton(label: 'Small', onPressed: () {}, size: KnurlButtonSize.sm),
+      ));
+      expect(find.text('Small'), findsOneWidget);
+    });
+  });
+}
+```
+
+- [ ] **Step 3: Запустить тест**
 
 ```bash
 cd mobile && flutter test test/shared/widgets/knurl_button_test.dart
 ```
 Ожидаем: `All tests passed!`
-
-- [ ] **Step 5: Коммит**
-
-```bash
-git add . && git commit -m "feat: KnurlButton — варианты primary/secondary/ghost/destructive, размеры md/sm, loading"
-```
 
 ---
 
@@ -405,102 +365,7 @@ git add . && git commit -m "feat: KnurlButton — варианты primary/secon
 - Create: `mobile/lib/shared/widgets/knurl_text_field.dart`
 - Test: `mobile/test/shared/widgets/knurl_text_field_test.dart`
 
-- [ ] **Step 1: Написать тест**
-
-Создай `mobile/test/shared/widgets/knurl_text_field_test.dart`:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:knurl/shared/theme/app_theme.dart';
-import 'package:knurl/shared/widgets/knurl_text_field.dart';
-
-Widget wrap(Widget child) => MaterialApp(
-      theme: appTheme,
-      home: Scaffold(
-        body: Center(
-          child: Form(child: child),
-        ),
-      ),
-    );
-
-void main() {
-  group('KnurlTextField', () {
-    testWidgets('renders label', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlTextField(
-          controller: TextEditingController(),
-          label: 'Email',
-        ),
-      ));
-      expect(find.text('Email'), findsOneWidget);
-    });
-
-    testWidgets('accepts text input', (tester) async {
-      final ctrl = TextEditingController();
-      await tester.pumpWidget(wrap(
-        KnurlTextField(controller: ctrl, label: 'Email'),
-      ));
-      await tester.enterText(find.byType(TextFormField), 'user@example.com');
-      expect(ctrl.text, 'user@example.com');
-    });
-
-    testWidgets('obscures text when obscureText is true', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlTextField(
-          controller: TextEditingController(),
-          label: 'Пароль',
-          obscureText: true,
-        ),
-      ));
-      final field = tester.widget<EditableText>(find.byType(EditableText));
-      expect(field.obscureText, isTrue);
-    });
-
-    testWidgets('shows error text when validator returns error', (tester) async {
-      final formKey = GlobalKey<FormState>();
-      await tester.pumpWidget(MaterialApp(
-        theme: appTheme,
-        home: Scaffold(
-          body: Form(
-            key: formKey,
-            child: KnurlTextField(
-              controller: TextEditingController(),
-              label: 'Email',
-              validator: (v) => (v == null || v.isEmpty) ? 'Обязательное поле' : null,
-            ),
-          ),
-        ),
-      ));
-      formKey.currentState!.validate();
-      await tester.pump();
-      expect(find.text('Обязательное поле'), findsOneWidget);
-    });
-
-    testWidgets('disabled field is not interactive', (tester) async {
-      final ctrl = TextEditingController(text: 'initial');
-      await tester.pumpWidget(wrap(
-        KnurlTextField(
-          controller: ctrl,
-          label: 'Email',
-          enabled: false,
-        ),
-      ));
-      final field = tester.widget<TextFormField>(find.byType(TextFormField));
-      expect(field.enabled, isFalse);
-    });
-  });
-}
-```
-
-- [ ] **Step 2: Запустить тест — ожидаем ошибку компиляции**
-
-```bash
-cd mobile && flutter test test/shared/widgets/knurl_text_field_test.dart
-```
-Ожидаем: `Error: uri 'package:knurl/shared/widgets/knurl_text_field.dart' not found`
-
-- [ ] **Step 3: Создать `mobile/lib/shared/widgets/knurl_text_field.dart`**
+- [ ] **Step 1: Создать `mobile/lib/shared/widgets/knurl_text_field.dart`**
 
 ```dart
 import 'package:flutter/material.dart';
@@ -580,18 +445,88 @@ class KnurlTextField extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 4: Запустить тест — ожидаем PASS**
+- [ ] **Step 2: Написать тест `mobile/test/shared/widgets/knurl_text_field_test.dart`**
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:knurl/shared/theme/app_theme.dart';
+import 'package:knurl/shared/widgets/knurl_text_field.dart';
+
+Widget wrap(Widget child) => MaterialApp(
+      theme: appTheme,
+      home: Scaffold(body: Center(child: Form(child: child))),
+    );
+
+void main() {
+  group('KnurlTextField', () {
+    testWidgets('renders label', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlTextField(controller: TextEditingController(), label: 'Email'),
+      ));
+      expect(find.text('Email'), findsOneWidget);
+    });
+
+    testWidgets('accepts text input', (tester) async {
+      final ctrl = TextEditingController();
+      await tester.pumpWidget(wrap(
+        KnurlTextField(controller: ctrl, label: 'Email'),
+      ));
+      await tester.enterText(find.byType(TextFormField), 'user@example.com');
+      expect(ctrl.text, 'user@example.com');
+    });
+
+    testWidgets('obscures text when obscureText is true', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlTextField(
+          controller: TextEditingController(),
+          label: 'Пароль',
+          obscureText: true,
+        ),
+      ));
+      final field = tester.widget<EditableText>(find.byType(EditableText));
+      expect(field.obscureText, isTrue);
+    });
+
+    testWidgets('shows error text when validator returns error', (tester) async {
+      final formKey = GlobalKey<FormState>();
+      await tester.pumpWidget(MaterialApp(
+        theme: appTheme,
+        home: Scaffold(
+          body: Form(
+            key: formKey,
+            child: KnurlTextField(
+              controller: TextEditingController(),
+              label: 'Email',
+              validator: (v) =>
+                  (v == null || v.isEmpty) ? 'Обязательное поле' : null,
+            ),
+          ),
+        ),
+      ));
+      formKey.currentState!.validate();
+      await tester.pump();
+      expect(find.text('Обязательное поле'), findsOneWidget);
+    });
+
+    testWidgets('disabled field is not interactive', (tester) async {
+      final ctrl = TextEditingController(text: 'initial');
+      await tester.pumpWidget(wrap(
+        KnurlTextField(controller: ctrl, label: 'Email', enabled: false),
+      ));
+      final field = tester.widget<TextFormField>(find.byType(TextFormField));
+      expect(field.enabled, isFalse);
+    });
+  });
+}
+```
+
+- [ ] **Step 3: Запустить тест**
 
 ```bash
 cd mobile && flutter test test/shared/widgets/knurl_text_field_test.dart
 ```
 Ожидаем: `All tests passed!`
-
-- [ ] **Step 5: Коммит**
-
-```bash
-git add . && git commit -m "feat: KnurlTextField — floating label, состояния focused/error/disabled"
-```
 
 ---
 
@@ -601,9 +536,52 @@ git add . && git commit -m "feat: KnurlTextField — floating label, состо�
 - Create: `mobile/lib/shared/widgets/knurl_chip.dart`
 - Test: `mobile/test/shared/widgets/knurl_chip_test.dart`
 
-- [ ] **Step 1: Написать тест**
+- [ ] **Step 1: Создать `mobile/lib/shared/widgets/knurl_chip.dart`**
 
-Создай `mobile/test/shared/widgets/knurl_chip_test.dart`:
+```dart
+import 'package:flutter/material.dart';
+import '../theme/knurl_theme.dart';
+
+class KnurlChip extends StatelessWidget {
+  const KnurlChip({
+    super.key,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KnurlTheme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 16),
+        decoration: BoxDecoration(
+          color: selected ? theme.accent : theme.surface,
+          borderRadius: theme.radius,
+          border: selected ? null : Border.all(color: theme.border, width: 1.5),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected ? Colors.white : const Color(0xFF777777),
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+- [ ] **Step 2: Написать тест `mobile/test/shared/widgets/knurl_chip_test.dart`**
 
 ```dart
 import 'package:flutter/material.dart';
@@ -651,70 +629,12 @@ void main() {
 }
 ```
 
-- [ ] **Step 2: Запустить тест — ожидаем ошибку компиляции**
-
-```bash
-cd mobile && flutter test test/shared/widgets/knurl_chip_test.dart
-```
-Ожидаем: `Error: uri 'package:knurl/shared/widgets/knurl_chip.dart' not found`
-
-- [ ] **Step 3: Создать `mobile/lib/shared/widgets/knurl_chip.dart`**
-
-```dart
-import 'package:flutter/material.dart';
-import '../theme/knurl_theme.dart';
-
-class KnurlChip extends StatelessWidget {
-  const KnurlChip({
-    super.key,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KnurlTheme.of(context);
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 120),
-        padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 16),
-        decoration: BoxDecoration(
-          color: selected ? theme.accent : theme.surface,
-          borderRadius: theme.radius,
-          border: selected ? null : Border.all(color: theme.border, width: 1.5),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: selected ? Colors.white : const Color(0xFF777777),
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
-}
-```
-
-- [ ] **Step 4: Запустить тест — ожидаем PASS**
+- [ ] **Step 3: Запустить тест**
 
 ```bash
 cd mobile && flutter test test/shared/widgets/knurl_chip_test.dart
 ```
 Ожидаем: `All tests passed!`
-
-- [ ] **Step 5: Коммит**
-
-```bash
-git add . && git commit -m "feat: KnurlChip — selected/unselected состояния с анимацией"
-```
 
 ---
 
@@ -724,70 +644,7 @@ git add . && git commit -m "feat: KnurlChip — selected/unselected состоя
 - Create: `mobile/lib/shared/widgets/knurl_badge.dart`
 - Test: `mobile/test/shared/widgets/knurl_badge_test.dart`
 
-- [ ] **Step 1: Написать тест**
-
-Создай `mobile/test/shared/widgets/knurl_badge_test.dart`:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:knurl/shared/theme/app_theme.dart';
-import 'package:knurl/shared/widgets/knurl_badge.dart';
-
-Widget wrap(Widget child) => MaterialApp(
-      theme: appTheme,
-      home: Scaffold(body: Center(child: child)),
-    );
-
-void main() {
-  group('KnurlBadge', () {
-    testWidgets('shows count when count > 0', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlBadge(count: 3, child: const Icon(Icons.notifications)),
-      ));
-      expect(find.text('3'), findsOneWidget);
-    });
-
-    testWidgets('hides badge when count is 0', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlBadge(count: 0, child: const Icon(Icons.notifications)),
-      ));
-      expect(find.byType(Stack), findsNothing);
-      expect(find.byType(Icon), findsOneWidget);
-    });
-
-    testWidgets('shows 99+ when count exceeds 99', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlBadge(count: 150, child: const Icon(Icons.notifications)),
-      ));
-      expect(find.text('99+'), findsOneWidget);
-    });
-
-    testWidgets('shows exactly 99 for count == 99', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlBadge(count: 99, child: const Icon(Icons.notifications)),
-      ));
-      expect(find.text('99'), findsOneWidget);
-    });
-
-    testWidgets('child is always rendered', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlBadge(count: 5, child: const Icon(Icons.notifications)),
-      ));
-      expect(find.byType(Icon), findsOneWidget);
-    });
-  });
-}
-```
-
-- [ ] **Step 2: Запустить тест — ожидаем ошибку компиляции**
-
-```bash
-cd mobile && flutter test test/shared/widgets/knurl_badge_test.dart
-```
-Ожидаем: `Error: uri 'package:knurl/shared/widgets/knurl_badge.dart' not found`
-
-- [ ] **Step 3: Создать `mobile/lib/shared/widgets/knurl_badge.dart`**
+- [ ] **Step 1: Создать `mobile/lib/shared/widgets/knurl_badge.dart`**
 
 ```dart
 import 'package:flutter/material.dart';
@@ -842,18 +699,66 @@ class KnurlBadge extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 4: Запустить тест — ожидаем PASS**
+- [ ] **Step 2: Написать тест `mobile/test/shared/widgets/knurl_badge_test.dart`**
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:knurl/shared/theme/app_theme.dart';
+import 'package:knurl/shared/widgets/knurl_badge.dart';
+
+Widget wrap(Widget child) => MaterialApp(
+      theme: appTheme,
+      home: Scaffold(body: Center(child: child)),
+    );
+
+void main() {
+  group('KnurlBadge', () {
+    testWidgets('shows count when count > 0', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlBadge(count: 3, child: const Icon(Icons.notifications)),
+      ));
+      expect(find.text('3'), findsOneWidget);
+    });
+
+    testWidgets('hides badge when count is 0', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlBadge(count: 0, child: const Icon(Icons.notifications)),
+      ));
+      expect(find.byType(Stack), findsNothing);
+      expect(find.byType(Icon), findsOneWidget);
+    });
+
+    testWidgets('shows 99+ when count exceeds 99', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlBadge(count: 150, child: const Icon(Icons.notifications)),
+      ));
+      expect(find.text('99+'), findsOneWidget);
+    });
+
+    testWidgets('shows exactly 99 for count == 99', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlBadge(count: 99, child: const Icon(Icons.notifications)),
+      ));
+      expect(find.text('99'), findsOneWidget);
+    });
+
+    testWidgets('child is always rendered', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlBadge(count: 5, child: const Icon(Icons.notifications)),
+      ));
+      expect(find.byType(Icon), findsOneWidget);
+    });
+  });
+}
+```
+
+- [ ] **Step 3: Запустить тест**
 
 ```bash
 cd mobile && flutter test test/shared/widgets/knurl_badge_test.dart
 ```
 Ожидаем: `All tests passed!`
-
-- [ ] **Step 5: Коммит**
-
-```bash
-git add . && git commit -m "feat: KnurlBadge — оверлей-счётчик, скрывается при count=0, показывает 99+"
-```
 
 ---
 
@@ -863,57 +768,7 @@ git add . && git commit -m "feat: KnurlBadge — оверлей-счётчик, 
 - Create: `mobile/lib/shared/widgets/knurl_spinner.dart`
 - Test: `mobile/test/shared/widgets/knurl_spinner_test.dart`
 
-- [ ] **Step 1: Написать тест**
-
-Создай `mobile/test/shared/widgets/knurl_spinner_test.dart`:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:knurl/shared/theme/app_theme.dart';
-import 'package:knurl/shared/widgets/knurl_spinner.dart';
-
-Widget wrap(Widget child) => MaterialApp(
-      theme: appTheme,
-      home: Scaffold(body: Center(child: child)),
-    );
-
-void main() {
-  group('KnurlSpinner', () {
-    testWidgets('sm renders CircularProgressIndicator 16px', (tester) async {
-      await tester.pumpWidget(wrap(
-        const KnurlSpinner(size: KnurlSpinnerSize.sm),
-      ));
-      final size = tester.getSize(find.byType(KnurlSpinner));
-      expect(size.width, 16.0);
-      expect(size.height, 16.0);
-    });
-
-    testWidgets('lg renders CircularProgressIndicator 32px', (tester) async {
-      await tester.pumpWidget(wrap(
-        const KnurlSpinner(size: KnurlSpinnerSize.lg),
-      ));
-      final size = tester.getSize(find.byType(KnurlSpinner));
-      expect(size.width, 32.0);
-      expect(size.height, 32.0);
-    });
-
-    testWidgets('renders without error with default size', (tester) async {
-      await tester.pumpWidget(wrap(const KnurlSpinner()));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    });
-  });
-}
-```
-
-- [ ] **Step 2: Запустить тест — ожидаем ошибку компиляции**
-
-```bash
-cd mobile && flutter test test/shared/widgets/knurl_spinner_test.dart
-```
-Ожидаем: `Error: uri 'package:knurl/shared/widgets/knurl_spinner.dart' not found`
-
-- [ ] **Step 3: Создать `mobile/lib/shared/widgets/knurl_spinner.dart`**
+- [ ] **Step 1: Создать `mobile/lib/shared/widgets/knurl_spinner.dart`**
 
 ```dart
 import 'package:flutter/material.dart';
@@ -949,18 +804,53 @@ class KnurlSpinner extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 4: Запустить тест — ожидаем PASS**
+- [ ] **Step 2: Написать тест `mobile/test/shared/widgets/knurl_spinner_test.dart`**
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:knurl/shared/theme/app_theme.dart';
+import 'package:knurl/shared/widgets/knurl_spinner.dart';
+
+Widget wrap(Widget child) => MaterialApp(
+      theme: appTheme,
+      home: Scaffold(body: Center(child: child)),
+    );
+
+void main() {
+  group('KnurlSpinner', () {
+    testWidgets('sm is 16x16', (tester) async {
+      await tester.pumpWidget(wrap(
+        const KnurlSpinner(size: KnurlSpinnerSize.sm),
+      ));
+      final size = tester.getSize(find.byType(KnurlSpinner));
+      expect(size.width, 16.0);
+      expect(size.height, 16.0);
+    });
+
+    testWidgets('lg is 32x32', (tester) async {
+      await tester.pumpWidget(wrap(
+        const KnurlSpinner(size: KnurlSpinnerSize.lg),
+      ));
+      final size = tester.getSize(find.byType(KnurlSpinner));
+      expect(size.width, 32.0);
+      expect(size.height, 32.0);
+    });
+
+    testWidgets('renders CircularProgressIndicator', (tester) async {
+      await tester.pumpWidget(wrap(const KnurlSpinner()));
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
+  });
+}
+```
+
+- [ ] **Step 3: Запустить тест**
 
 ```bash
 cd mobile && flutter test test/shared/widgets/knurl_spinner_test.dart
 ```
 Ожидаем: `All tests passed!`
-
-- [ ] **Step 5: Коммит**
-
-```bash
-git add . && git commit -m "feat: KnurlSpinner — размеры sm (16px) и lg (32px)"
-```
 
 ---
 
@@ -970,78 +860,7 @@ git add . && git commit -m "feat: KnurlSpinner — размеры sm (16px) и l
 - Create: `mobile/lib/shared/widgets/knurl_avatar.dart`
 - Test: `mobile/test/shared/widgets/knurl_avatar_test.dart`
 
-- [ ] **Step 1: Написать тест**
-
-Создай `mobile/test/shared/widgets/knurl_avatar_test.dart`:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:knurl/shared/theme/app_theme.dart';
-import 'package:knurl/shared/widgets/knurl_avatar.dart';
-
-Widget wrap(Widget child) => MaterialApp(
-      theme: appTheme,
-      home: Scaffold(body: Center(child: child)),
-    );
-
-void main() {
-  group('KnurlAvatar', () {
-    testWidgets('renders initials when imageUrl is null', (tester) async {
-      await tester.pumpWidget(wrap(
-        const KnurlAvatar(initials: 'АФ'),
-      ));
-      expect(find.text('АФ'), findsOneWidget);
-    });
-
-    testWidgets('sm size is 28x28', (tester) async {
-      await tester.pumpWidget(wrap(
-        const KnurlAvatar(initials: 'АФ', size: KnurlAvatarSize.sm),
-      ));
-      final size = tester.getSize(find.byType(KnurlAvatar));
-      expect(size.width, 28.0);
-      expect(size.height, 28.0);
-    });
-
-    testWidgets('md size is 40x40', (tester) async {
-      await tester.pumpWidget(wrap(
-        const KnurlAvatar(initials: 'АФ', size: KnurlAvatarSize.md),
-      ));
-      final size = tester.getSize(find.byType(KnurlAvatar));
-      expect(size.width, 40.0);
-      expect(size.height, 40.0);
-    });
-
-    testWidgets('lg size is 56x56', (tester) async {
-      await tester.pumpWidget(wrap(
-        const KnurlAvatar(initials: 'АФ', size: KnurlAvatarSize.lg),
-      ));
-      final size = tester.getSize(find.byType(KnurlAvatar));
-      expect(size.width, 56.0);
-      expect(size.height, 56.0);
-    });
-
-    testWidgets('does not show initials when imageUrl is provided', (tester) async {
-      await tester.pumpWidget(wrap(
-        const KnurlAvatar(
-          initials: 'АФ',
-          imageUrl: 'https://example.com/photo.jpg',
-        ),
-      ));
-      expect(find.text('АФ'), findsNothing);
-    });
-  });
-}
-```
-
-- [ ] **Step 2: Запустить тест — ожидаем ошибку компиляции**
-
-```bash
-cd mobile && flutter test test/shared/widgets/knurl_avatar_test.dart
-```
-Ожидаем: `Error: uri 'package:knurl/shared/widgets/knurl_avatar.dart' not found`
-
-- [ ] **Step 3: Создать `mobile/lib/shared/widgets/knurl_avatar.dart`**
+- [ ] **Step 1: Создать `mobile/lib/shared/widgets/knurl_avatar.dart`**
 
 ```dart
 import 'package:flutter/material.dart';
@@ -1096,18 +915,72 @@ class KnurlAvatar extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 4: Запустить тест — ожидаем PASS**
+- [ ] **Step 2: Написать тест `mobile/test/shared/widgets/knurl_avatar_test.dart`**
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:knurl/shared/theme/app_theme.dart';
+import 'package:knurl/shared/widgets/knurl_avatar.dart';
+
+Widget wrap(Widget child) => MaterialApp(
+      theme: appTheme,
+      home: Scaffold(body: Center(child: child)),
+    );
+
+void main() {
+  group('KnurlAvatar', () {
+    testWidgets('renders initials when imageUrl is null', (tester) async {
+      await tester.pumpWidget(wrap(const KnurlAvatar(initials: 'АФ')));
+      expect(find.text('АФ'), findsOneWidget);
+    });
+
+    testWidgets('sm size is 28x28', (tester) async {
+      await tester.pumpWidget(wrap(
+        const KnurlAvatar(initials: 'АФ', size: KnurlAvatarSize.sm),
+      ));
+      final size = tester.getSize(find.byType(KnurlAvatar));
+      expect(size.width, 28.0);
+      expect(size.height, 28.0);
+    });
+
+    testWidgets('md size is 40x40', (tester) async {
+      await tester.pumpWidget(wrap(
+        const KnurlAvatar(initials: 'АФ', size: KnurlAvatarSize.md),
+      ));
+      final size = tester.getSize(find.byType(KnurlAvatar));
+      expect(size.width, 40.0);
+      expect(size.height, 40.0);
+    });
+
+    testWidgets('lg size is 56x56', (tester) async {
+      await tester.pumpWidget(wrap(
+        const KnurlAvatar(initials: 'АФ', size: KnurlAvatarSize.lg),
+      ));
+      final size = tester.getSize(find.byType(KnurlAvatar));
+      expect(size.width, 56.0);
+      expect(size.height, 56.0);
+    });
+
+    testWidgets('does not show initials when imageUrl is provided', (tester) async {
+      await tester.pumpWidget(wrap(
+        const KnurlAvatar(
+          initials: 'АФ',
+          imageUrl: 'https://example.com/photo.jpg',
+        ),
+      ));
+      expect(find.text('АФ'), findsNothing);
+    });
+  });
+}
+```
+
+- [ ] **Step 3: Запустить тест**
 
 ```bash
 cd mobile && flutter test test/shared/widgets/knurl_avatar_test.dart
 ```
 Ожидаем: `All tests passed!`
-
-- [ ] **Step 5: Коммит**
-
-```bash
-git add . && git commit -m "feat: KnurlAvatar — размеры sm/md/lg, инициалы или фото"
-```
 
 ---
 
@@ -1117,62 +990,7 @@ git add . && git commit -m "feat: KnurlAvatar — размеры sm/md/lg, ин�
 - Create: `mobile/lib/shared/widgets/knurl_status_tag.dart`
 - Test: `mobile/test/shared/widgets/knurl_status_tag_test.dart`
 
-- [ ] **Step 1: Написать тест**
-
-Создай `mobile/test/shared/widgets/knurl_status_tag_test.dart`:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:knurl/shared/theme/app_theme.dart';
-import 'package:knurl/shared/widgets/knurl_status_tag.dart';
-
-Widget wrap(Widget child) => MaterialApp(
-      theme: appTheme,
-      home: Scaffold(body: Center(child: child)),
-    );
-
-void main() {
-  group('KnurlStatusTag', () {
-    testWidgets('all statuses render without error', (tester) async {
-      for (final s in KnurlTagStatus.values) {
-        await tester.pumpWidget(wrap(KnurlStatusTag(status: s)));
-        expect(find.byType(KnurlStatusTag), findsOneWidget);
-      }
-    });
-
-    testWidgets('active shows ACTIVE label', (tester) async {
-      await tester.pumpWidget(wrap(
-        const KnurlStatusTag(status: KnurlTagStatus.active),
-      ));
-      expect(find.text('ACTIVE'), findsOneWidget);
-    });
-
-    testWidgets('done shows DONE label', (tester) async {
-      await tester.pumpWidget(wrap(
-        const KnurlStatusTag(status: KnurlTagStatus.done),
-      ));
-      expect(find.text('DONE'), findsOneWidget);
-    });
-
-    testWidgets('custom renders provided label in uppercase', (tester) async {
-      await tester.pumpWidget(wrap(
-        KnurlStatusTag.custom(label: 'Warmup', color: Colors.blue),
-      ));
-      expect(find.text('WARMUP'), findsOneWidget);
-    });
-  });
-}
-```
-
-- [ ] **Step 2: Запустить тест — ожидаем ошибку компиляции**
-
-```bash
-cd mobile && flutter test test/shared/widgets/knurl_status_tag_test.dart
-```
-Ожидаем: `Error: uri 'package:knurl/shared/widgets/knurl_status_tag.dart' not found`
-
-- [ ] **Step 3: Создать `mobile/lib/shared/widgets/knurl_status_tag.dart`**
+- [ ] **Step 1: Создать `mobile/lib/shared/widgets/knurl_status_tag.dart`**
 
 ```dart
 import 'package:flutter/material.dart';
@@ -1237,36 +1055,76 @@ class KnurlStatusTag extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 4: Запустить тест — ожидаем PASS**
+- [ ] **Step 2: Написать тест `mobile/test/shared/widgets/knurl_status_tag_test.dart`**
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:knurl/shared/theme/app_theme.dart';
+import 'package:knurl/shared/widgets/knurl_status_tag.dart';
+
+Widget wrap(Widget child) => MaterialApp(
+      theme: appTheme,
+      home: Scaffold(body: Center(child: child)),
+    );
+
+void main() {
+  group('KnurlStatusTag', () {
+    testWidgets('all statuses render without error', (tester) async {
+      for (final s in KnurlTagStatus.values) {
+        await tester.pumpWidget(wrap(KnurlStatusTag(status: s)));
+        expect(find.byType(KnurlStatusTag), findsOneWidget);
+      }
+    });
+
+    testWidgets('active shows ACTIVE label', (tester) async {
+      await tester.pumpWidget(wrap(
+        const KnurlStatusTag(status: KnurlTagStatus.active),
+      ));
+      expect(find.text('ACTIVE'), findsOneWidget);
+    });
+
+    testWidgets('done shows DONE label', (tester) async {
+      await tester.pumpWidget(wrap(
+        const KnurlStatusTag(status: KnurlTagStatus.done),
+      ));
+      expect(find.text('DONE'), findsOneWidget);
+    });
+
+    testWidgets('custom renders provided label in uppercase', (tester) async {
+      await tester.pumpWidget(wrap(
+        KnurlStatusTag.custom(label: 'Warmup', color: Colors.blue),
+      ));
+      expect(find.text('WARMUP'), findsOneWidget);
+    });
+  });
+}
+```
+
+- [ ] **Step 3: Запустить тест**
 
 ```bash
 cd mobile && flutter test test/shared/widgets/knurl_status_tag_test.dart
 ```
 Ожидаем: `All tests passed!`
 
-- [ ] **Step 5: Коммит**
-
-```bash
-git add . && git commit -m "feat: KnurlStatusTag — статусы active/rest/warning/done/pr и custom"
-```
-
 ---
 
-## Task 9: Миграция auth_screen.dart
+## Task 9: Миграция auth_screen.dart + финальный коммит
 
 **Files:**
 - Modify: `mobile/lib/features/auth/presentation/auth_screen.dart`
 
-- [ ] **Step 1: Запустить существующие тесты контроллера — убедиться что всё зелёное**
+- [ ] **Step 1: Запустить все тесты — убедиться что зелёные перед миграцией**
 
 ```bash
-cd mobile && flutter test test/features/auth/
+cd mobile && flutter test
 ```
 Ожидаем: `All tests passed!`
 
 - [ ] **Step 2: Заменить содержимое `mobile/lib/features/auth/presentation/auth_screen.dart`**
 
-Удаляем приватные классы `_SubmitButton`, `_EmailField`, `_PasswordField` и заменяем их на `KnurlButton` и `KnurlTextField`:
+Удаляем `_SubmitButton`, `_EmailField`, `_PasswordField` и заменяем на `KnurlButton` / `KnurlTextField`:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -1408,8 +1266,8 @@ cd mobile && flutter test
 ```
 Ожидаем: `All tests passed!`
 
-- [ ] **Step 4: Коммит**
+- [ ] **Step 4: Финальный коммит**
 
 ```bash
-git add . && git commit -m "feat: мигрировать auth_screen на KnurlButton и KnurlTextField"
+git add . && git commit -m "feat: атомарные компоненты — KnurlTheme, Button, TextField, Chip, Badge, Spinner, Avatar, StatusTag; миграция auth_screen"
 ```
