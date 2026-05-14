@@ -209,6 +209,27 @@ KnurlStatusTag.custom(label: 'Warmup', color: Colors.blue)
 
 ---
 
+## Миграция существующих экранов
+
+После реализации компонентов — заменить нативные Material-виджеты на Knurl-компоненты во всех уже реализованных экранах.
+
+### `auth_screen.dart`
+
+| Было | Станет |
+|------|--------|
+| `FilledButton` | `KnurlButton(variant: primary)` |
+| `TextFormField` (Email) | `KnurlTextField(label: 'Email', ...)` |
+| `TextFormField` (Пароль) | `KnurlTextField(label: 'Пароль', obscureText: true, ...)` |
+| `CircularProgressIndicator` в кнопке | `isLoading: true` на `KnurlButton` |
+
+`_SubmitButton`, `_EmailField`, `_PasswordField` — приватные виджеты удаляются, логика уходит в `KnurlButton` / `KnurlTextField`.
+
+### Другие экраны
+
+По мере реализации новых экранов — использовать только Knurl-компоненты. Нативные Material-виджеты (кроме `Scaffold`, `AppBar`, `SegmentedButton` и layout-примитивов) в новом коде не применять.
+
+---
+
 ## Тестирование
 
 Каждый компонент покрывается виджет-тестами:
