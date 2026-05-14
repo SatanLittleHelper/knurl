@@ -7,8 +7,9 @@
 
 ### Инфраструктура
 1. [x] **Проект Flutter** — инициализация, структура папок, зависимости (drift, dio, riverpod/bloc, go_router)
-2. [ ] **Локальная БД (SQLite/drift)** — схема таблиц (Exercise, WorkoutPlan, WorkoutDay, WorkoutSession, SetLog), миграции
+2. [x] **Локальная БД (SQLite/drift)** — схема таблиц (Exercise, WorkoutPlan, WorkoutDay, WorkoutSession, SetLog), миграции
 3. [ ] **API-клиент** — HTTP-клиент для Go-бэкенда, обработка ошибок, interceptors для JWT
+   - _TODO: добавить refresh token (сейчас только access token 30 дней) — реализовать вместе с фичей 4 Auth, когда бэкенд добавит эндпоинт_
 
 ### Экраны
 4. [ ] **Auth** — регистрация и вход (email + пароль), хранение и обновление JWT
