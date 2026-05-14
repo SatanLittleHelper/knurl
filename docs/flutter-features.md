@@ -20,7 +20,6 @@
 
 ### Фоновые сервисы
 10. [ ] **Sync Engine** — фоновая синхронизация записей с `synced = false` на Go-сервер, получение изменений с других устройств
-11. [ ] **Refresh Token** — эндпоинт на Go-бэкенде + interceptor на Flutter для автоматического обновления access token
 
 ## Статус
 
@@ -36,4 +35,3 @@
 | 8 | History | — | — | — |
 | 9 | Exercise Library | — | — | — |
 | 10 | Sync Engine | — | — | — |
-| 11 | Refresh Token | — | — | — |
